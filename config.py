@@ -1,3 +1,4 @@
+import os
 device = 'cuda'
 posterior_thresh = 0.5
 sample_rate = 44100 # 采样率是44100
@@ -54,10 +55,11 @@ class_labels_hard = {
 classes_num_hard = len(labels_hard)
 
 
-output_model = '/root/autodl-fs/LOGANDRESULT/Task4b/result/baseline_model/'
-output_folder = '/root/autodl-fs/LOGANDRESULT/Task4b/result/baseline_dev_txt_scores'
-output_folder_soft = '/root/autodl-fs/LOGANDRESULT/Task4b/result/baseline_dev_txt_scores_soft'
-
+result_path = '/root/autodl-fs/LOGANDRESULT/Task4b/result'
+task = "baseline"
+output_model = os.path.join(result_path, task, 'model')
+output_folder = os.path.join(result_path, task, 'dev_txt_scores')
+output_folder_soft = os.path.join(result_path, task, 'dev_txt_scores_soft')
 
 development_feature = '/root/autodl-fs/dataset/MAESTRO_Real/development/features'
 development_soft_labels = '/root/autodl-fs/dataset/MAESTRO_Real/development/soft_labels'
