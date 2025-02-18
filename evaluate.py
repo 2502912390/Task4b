@@ -2,8 +2,8 @@ import os
 import numpy as np
 import config
 from dcase_util.containers import metadata
-import sed_scores_eval
-from sed_scores_eval import segment_based
+import sed_scores_eval_my
+from sed_scores_eval_my.sed_scores_eval.segment_based.precision_recall import best_fscore
 
 
 def find_contiguous_regions(activity_array):
@@ -98,18 +98,16 @@ def metric_perbatch(segment_based_metrics, framewise_output, target):
         estimated_event_list=results
     )
 
-
     return segment_based_metrics
-
 
 
 def get_threshold_independent(path_groundtruth, path_scores):
     # Calculate threshold independent
 
-    f_best, p_best, r_best, thresholds_best, stats_best = segment_based.best_fscore(
-        scores=path_scores,
-        ground_truth=path_groundtruth,
-        audio_durations= 'metadata/development_metadata.csv', 
+    f_best, p_best, r_best, thresholds_best, stats_best = best_fscore(
+        scores='/root/autodl-fs/LOGANDRESULT/Task4b/result/baseline/dev_txt_scores/',
+        ground_truth='/autodl-fs/data/Task4b/metadata/gt_dev.csv',
+        audio_durations= '/autodl-fs/data/Task4b/metadata/development_metadata.csv', 
         segment_length=1.,
         min_precision=0.,
         min_recall=0.0,

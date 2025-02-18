@@ -280,11 +280,10 @@ def train():
     print(f'\nMacro segment based F1: {round((sum(np.nan_to_num(macroFs))/config.classes_num_hard)*100,2)} ')
     print('\n')
 
-    #这里会报错？？？
-    # path_groundtruth = 'metadata/gt_dev.csv'
-    # # Calculate threshold independent metrics
-    # get_threshold_independent(path_groundtruth, config.output_folder)
-
 # python train_soft.py 
 if __name__ == '__main__':
-    train()
+    # train()
+
+    path_groundtruth = '/autodl-fs/data/Task4b/metadata/gt_dev.csv'
+    result = get_threshold_independent(path_groundtruth, config.output_folder)
+    print(result)
