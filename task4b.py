@@ -46,7 +46,7 @@ def train():
     patience = int(0.6*stop_iteration)
     holdout_fold = np.arange(1, 6) #折数
     seq_len = 200 #数据要划分的长度
-    batch_size = 64
+    batch_size = 31
     
     # CRNN model definition   
     cnn_filters = 128       # Number of filters in the CNN
@@ -73,7 +73,10 @@ def train():
     for fold in holdout_fold:
 
         # Load features and labels
+        # X(29648, 64)  Y(29648, 17) 
         X, Y, X_val, Y_val = load_merged_data(config.development_feature, config.development_soft_labels, fold)
+
+        # X(148, 200, 64)  Y(148, 200, 17)  148*200=29600
         X, Y, X_val, Y_val = preprocess_data(X, Y, X_val, Y_val, seq_len) #划分数据为seq_len
         
         train_dataset = maestroDataset(X, Y)
@@ -112,10 +115,9 @@ def train():
                 # Zero gradients for every batch
                 optimizer.zero_grad()
 
-                print(batch_data.shape)
+                # batch_data:([bs, 200, 64])  batch_target:([bs, 200, 17])  batch_output:([bs, 200, 17])
                 batch_output = modelcrnn(move_data_to_device(batch_data, device))
-
-                # Calculate loss
+                
                 loss = clip_mse(batch_output, move_data_to_device(batch_target,device))
                     
                 tr_batch_loss.append(loss.item())
@@ -165,7 +167,7 @@ def train():
                     output = segment_based_metrics_batch.result_report_class_wise()
 
                     print(output)
-                    torch.save(best_model.state_dict(), f'{output_model}/best_fold{fold}.bin')
+                    torch.save(best_model.state_dict(), f'{config.output_model}/best_fold{fold}.bin')
 
             pat_cnt += 1
             pat_learn_rate += 1

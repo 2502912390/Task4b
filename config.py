@@ -56,7 +56,7 @@ classes_num_hard = len(labels_hard)
 
 
 result_path = '/root/autodl-fs/LOGANDRESULT/Task4b/result'
-task = "baseline"
+task = "baseline_test"
 output_model = os.path.join(result_path, task, 'model')
 output_folder = os.path.join(result_path, task, 'dev_txt_scores')
 output_folder_soft = os.path.join(result_path, task, 'dev_txt_scores_soft')
