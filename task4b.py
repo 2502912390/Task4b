@@ -12,6 +12,7 @@ import pandas as pd
 from data_generator import maestroDataset
 import config
 
+# 加载处理后的音频数据文件，注意：保存文件的时候是训练何验证一起保存的
 def load_merged_data(_feat_folder, _lab_folder,  _fold=None):
     # Load features (mbe)
     feat_file_fold = os.path.join(_feat_folder, 'merged_mbe_fold{}.npz'.format( _fold))
@@ -44,14 +45,13 @@ def train():
     learning_rate = 1e-3 
     patience = int(0.6*stop_iteration)
     holdout_fold = np.arange(1, 6) #折数
-    seq_len = 200 #？？？
+    seq_len = 200 #数据要划分的长度
     batch_size = 64
     
     # CRNN model definition   
     cnn_filters = 128       # Number of filters in the CNN
     rnn_hid = 32            # Number of RNN nodes.  Length of rnn_nb =  number of RNN layers
     dropout_rate = 0.2      # Dropout after each layer
-
 
     device = 'cuda' if (torch.cuda.is_available()) else 'cpu'
 
@@ -73,8 +73,8 @@ def train():
     for fold in holdout_fold:
 
         # Load features and labels
-        X, Y, X_val, Y_val = load_merged_data('development/features', 'development/soft_labels', fold)
-        X, Y, X_val, Y_val = preprocess_data(X, Y, X_val, Y_val, seq_len)
+        X, Y, X_val, Y_val = load_merged_data(config.development_feature, config.development_soft_labels, fold)
+        X, Y, X_val, Y_val = preprocess_data(X, Y, X_val, Y_val, seq_len) #划分数据为seq_len
         
         train_dataset = maestroDataset(X, Y)
         validate_dataset = maestroDataset(X_val, Y_val)
@@ -87,7 +87,7 @@ def train():
                                                     num_workers=1, pin_memory=True)
 
         # Prepare model
-        modelcrnn = my_CRNN(config.classes_num_soft, cnn_filters, rnn_hid, dropout_rate)
+        modelcrnn = my_CRNN(config.classes_num_soft, cnn_filters, rnn_hid, dropout_rate)#最后是17个类别？？？
         
         if 'cuda' in device:
             modelcrnn.to(device)
@@ -98,6 +98,8 @@ def train():
         optimizer = optim.Adam(modelcrnn.parameters(), lr=learning_rate, betas=(0.9, 0.999), eps=1e-08, weight_decay=0., amsgrad=False)
 
         best_epoch = 0; pat_cnt = 0; pat_learn_rate = 0; best_loss = 99999
+
+        #记录每一个epoch的损失 val_F1 val_ER
         tr_loss, val_F1, val_ER = [0] * stop_iteration, [0] * stop_iteration, [0] * stop_iteration
 
         # Train on mini batches
@@ -110,6 +112,7 @@ def train():
                 # Zero gradients for every batch
                 optimizer.zero_grad()
 
+                print(batch_data.shape)
                 batch_output = modelcrnn(move_data_to_device(batch_data, device))
 
                 # Calculate loss
@@ -135,8 +138,6 @@ def train():
                 
                 running_loss = 0.0
                 for (batch_data, batch_target) in validate_loader:
-                    
-
                     batch_output = modelcrnn(move_data_to_device(batch_data, device))
 
                     loss = clip_mse(batch_output, move_data_to_device(batch_target,device))
@@ -154,7 +155,7 @@ def train():
                 val_F1[epoch] = batch_segment_based_metrics_f1['f_measure']
                 val_ER[epoch] = batch_segment_based_metrics_ER['error_rate']
                 
-                # Check if during the epochs the ER does not improve
+                # 保存最佳模型
                 if avg_vloss < best_loss:
                     best_model = modelcrnn
                     best_epoch = epoch
@@ -184,16 +185,15 @@ def train():
             if (epoch == stop_iteration) or (pat_cnt > patience):
                 break
 
-        # TEST
+        # 训练完一个stop_iteration后进入测试
         test_files = pd.read_csv('development_folds/fold{}_test.csv'.format(fold))['filename'].tolist()                                            
         
         segment_based_metrics_test = sed_eval.sound_event.SegmentBasedMetrics(
             event_label_list=config.labels_hard,
             time_resolution=1.0
         )
-
         
-        modelcrnn.load_state_dict(torch.load(f'{output_model}/best_fold{fold}.bin', map_location=device))
+        modelcrnn.load_state_dict(torch.load(f'{config.output_model}/best_fold{fold}.bin', map_location=device))
         modelcrnn.eval()
         
         with torch.no_grad():
@@ -203,6 +203,7 @@ def train():
                 audio_name = file.split('/')[-1]
                 batch_data = np.load(f'development/features/test_{audio_name}_fold{fold}.npz')
                 data = torch.Tensor(batch_data['arr_0'])
+
                 batch_target = np.load(f'development/soft_labels/lab_soft_{audio_name}_fold{fold}.npz')
                 target = batch_target['arr_0']
                 
@@ -211,8 +212,8 @@ def train():
                 framewise_output = batch_output.squeeze().detach().cpu().numpy()
                 
                 # output for each file
-                eval_meta_hard(output_folder, audio_name, framewise_output)
-                eval_meta_soft(output_folder_soft, audio_name, framewise_output)
+                eval_meta_hard(config.output_folder, audio_name, framewise_output)
+                eval_meta_soft(config.output_folder_soft, audio_name, framewise_output)
                 
                 # Append to evaluate the whole test fold at once
                 if nbatch == 0:
@@ -275,14 +276,13 @@ def train():
         macroFs.append(class_wise_metrics[c]["f_measure"]["f_measure"])
     
     print(f'\nMacro segment based F1: {round((sum(np.nan_to_num(macroFs))/config.classes_num_hard)*100,2)} ')
-    
     print('\n')
-    path_groundtruth = 'metadata/gt_dev.csv'
-    # Calculate threshold independent metrics
-    get_threshold_independent(path_groundtruth, output_folder)
 
+    #这里会报错？？？
+    # path_groundtruth = 'metadata/gt_dev.csv'
+    # # Calculate threshold independent metrics
+    # get_threshold_independent(path_groundtruth, config.output_folder)
 
 # python train_soft.py 
 if __name__ == '__main__':
-
     train()

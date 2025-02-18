@@ -24,6 +24,7 @@ def find_contiguous_regions(activity_array):
     return change_indices.reshape((-1, 2))
 
 
+#将模型的逐帧预测结果（framewise_output）转换为 SED 评估格式，并保存为 .tsv 文件。
 def eval_meta_soft(output_folder, audio_name, framewise_output):
 
     hop_length_seconds = config.hop_size / config.sample_rate
@@ -116,6 +117,7 @@ def get_threshold_independent(path_groundtruth, path_scores):
         time_decimals=30,
         num_jobs=8,
     )
+    
     print(thresholds_best)
     print('-----------------------\n')
     for cls in f_best:

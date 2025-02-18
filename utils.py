@@ -95,7 +95,7 @@ def create_folder(_fold_path):
         os.makedirs(_fold_path)
 
 
-
+# 将长数据划分为subdivs大小
 def split_in_seqs(data, subdivs):
     if len(data.shape) == 1:
         if data.shape[0] % subdivs:

@@ -29,7 +29,7 @@ class_labels_soft = {
     'cash register beeping': 16
 }
 
-classes_num_soft = len(labels_soft)
+classes_num_soft = len(labels_soft) #17
 
 
 
@@ -57,3 +57,7 @@ classes_num_hard = len(labels_hard)
 output_model = '/root/autodl-fs/LOGANDRESULT/Task4b/result/baseline_model/'
 output_folder = '/root/autodl-fs/LOGANDRESULT/Task4b/result/baseline_dev_txt_scores'
 output_folder_soft = '/root/autodl-fs/LOGANDRESULT/Task4b/result/baseline_dev_txt_scores_soft'
+
+
+development_feature = '/root/autodl-fs/dataset/MAESTRO_Real/development/features'
+development_soft_labels = '/root/autodl-fs/dataset/MAESTRO_Real/development/soft_labels'
