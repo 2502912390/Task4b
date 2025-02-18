@@ -31,14 +31,27 @@ def load_labels(file_name, nframes):
 # -----------------------------------------------------------------------
 # Feature extraction
 # -----------------------------------------------------------------------
+# def extract_mbe(_y, _sr, _nfft, _hop, _nb_mel, _fmin, _fmax):
+#     spec, _ = librosa.core.spectrum._spectrogram(y=_y, n_fft=_nfft, hop_length=_hop, power=1)
+#     mel_basis = librosa.filters.mel(sr=_sr, n_fft=_nfft, n_mels=_nb_mel, fmin=_fmin, fmax=_fmax)
+
+#     return np.dot(mel_basis, spec)
+
+
 def extract_mbe(_y, _sr, _nfft, _hop, _nb_mel, _fmin, _fmax):
-    spec, _ = librosa.core.spectrum._spectrogram(y=_y, n_fft=_nfft, hop_length=_hop, power=1)
+    # 计算 STFT 频谱
+    spec = np.abs(librosa.stft(_y, n_fft=_nfft, hop_length=_hop)) ** 1  # `power=1` 计算幅度谱
+    
+    # 计算 Mel 滤波器
     mel_basis = librosa.filters.mel(sr=_sr, n_fft=_nfft, n_mels=_nb_mel, fmin=_fmin, fmax=_fmax)
+    
+    # 计算 Mel 频谱
+    mel_spec = np.dot(mel_basis, spec)
+    
+    return mel_spec
 
-    return np.dot(mel_basis, spec)
 
-
-def extract_data(dev_file, audio_path, annotation_path, feat_folder):
+def extract_data(dev_file, audio_path, annotation_path, feat_folder):#dev_file=development_split.csv 包含所有音频文件
 # Extract features for all audio files
     # User set parameters
     hop_len = config.hop_size
@@ -54,10 +67,10 @@ def extract_data(dev_file, audio_path, annotation_path, feat_folder):
     for file in files:
         audio_name = file.split(os.path.sep)[-1]
         # MEL features
-        y, sr = utils.load_audio(os.path.join(audio_path, file+'.wav'), mono=is_mono, fs=fs)
-        mbe = extract_mbe(y, sr, nfft, hop_len, nb_mel_bands, fmin, fmax).T
+        y, sr = utils.load_audio(os.path.join(audio_path, file+'.wav'), mono=is_mono, fs=fs) #加载音频
+        mbe = extract_mbe(y, sr, nfft, hop_len, nb_mel_bands, fmin, fmax).T #计算mel频谱
         tmp_feat_file = os.path.join(feat_folder, '{}.npz'.format(audio_name))
-        np.savez(tmp_feat_file, mbe)
+        np.savez(tmp_feat_file, mbe)#保存mel到feat_folder为npz格式
 
         nframes = mbe.shape[0]
                
@@ -65,7 +78,7 @@ def extract_data(dev_file, audio_path, annotation_path, feat_folder):
         annotation_file_soft = os.path.join(annotation_path, 'soft_labels_' + file + '.txt')
         annotations_soft = load_labels(annotation_file_soft, nframes)
         tmp_lab_file = os.path.join(feat_folder, '{}_soft.npz'.format(audio_name))
-        np.savez(tmp_lab_file, annotations_soft)
+        np.savez(tmp_lab_file, annotations_soft)# 保存对应的标签
 
 
 
@@ -76,13 +89,13 @@ def fold_normalization(feat_folder, output_folder):
     for fold in np.arange(1, 6):
 
         name = str(fold)
-        # Load data
+        # Load data 这几个文件规定了每一折中的train val test文件
         train_files = pd.read_csv('development_folds/fold{}_train.csv'.format(name))['filename'].tolist()
         val_files = pd.read_csv('development_folds/fold{}_val.csv'.format(name))['filename'].tolist()
         test_files = pd.read_csv('development_folds/fold{}_test.csv'.format(name))['filename'].tolist()
 
         X_train, X_val = None, None
-        for file in train_files:
+        for file in train_files:#每一折里面的训练集数据拼接
             audio_name = file.split('/')[-1]
             
             tmp_feat_file = os.path.join(feat_folder, '{}.npz'.format(audio_name))
@@ -93,7 +106,7 @@ def fold_normalization(feat_folder, output_folder):
             else:
                 X_train = np.concatenate((X_train, tmp_mbe), 0)
 
-        for file in val_files:
+        for file in val_files:#每一折里面的验证集数据拼接
             audio_name = file.split('/')[-1]
 
             tmp_feat_file = os.path.join(feat_folder, '{}.npz'.format(audio_name))
@@ -105,12 +118,12 @@ def fold_normalization(feat_folder, output_folder):
                 X_val = np.concatenate((X_val, tmp_mbe), 0)
 
         # Normalize the training data, and scale the testing data using the training data weights
-        scaler = preprocessing.StandardScaler()
+        scaler = preprocessing.StandardScaler()# 对数据进行标准化
         X_train = scaler.fit_transform(X_train)
         X_val = scaler.transform(X_val)
 
         normalized_feat_file = os.path.join(output_folder, 'merged_mbe_fold{}.npz'.format(fold))
-        np.savez(normalized_feat_file, X_train, X_val)
+        np.savez(normalized_feat_file, X_train, X_val)# 一折的训练+验证数据保存到development/features
 
         # For the test data save individually
         for file in test_files:
@@ -121,7 +134,7 @@ def fold_normalization(feat_folder, output_folder):
             tmp_mbe = dmp['arr_0']
             X_test = scaler.transform(tmp_mbe)
             normalized_test_file = os.path.join(output_folder, 'test_{}_fold{}.npz'.format(audio_name, fold))
-            np.savez(normalized_test_file, X_test)
+            np.savez(normalized_test_file, X_test)# 保存测试数据
         
         print(f'\t{normalized_feat_file}')
         print(f'\ttrain {X_train.shape} val {X_val.shape}')
@@ -185,26 +198,25 @@ def merge_annotations_into_folds(feat_folder, labeltype, output_folder):
 
 if __name__ == '__main__':
     # path to all the data
-    audio_path = 'data/audio'
-    annotation_path = 'data/annotation'
+    audio_path = '/root/autodl-fs/dataset/MAESTRO_Real/development_audio'
+    annotation_path = '/root/autodl-fs/dataset/MAESTRO_Real/development_annotation'
     dev_file = 'development_split.csv'
     
     # Output
     feat_folder = 'features_mbe/'
     utils.create_folder(feat_folder)
 
-
     # Extract mel features for all the development data
-    extract_data(dev_file, audio_path, annotation_path, feat_folder)
+    extract_data(dev_file, audio_path, annotation_path, feat_folder)#对音频文件保存mel何其label的np格式到feat_folder
 
     # Normalize data into folds
     output_folder = 'development/features'
     utils.create_folder(output_folder)
-    fold_normalization(feat_folder, output_folder)
+    fold_normalization(feat_folder, output_folder)# 对数据分折 并保存到development/features
     
     # Merge Soft Labels annotations
     output_folder = 'development/soft_labels'
     utils.create_folder(output_folder)
-    merge_annotations_into_folds(feat_folder, 'soft', output_folder)
+    merge_annotations_into_folds(feat_folder, 'soft', output_folder)# 对标签分折 并保存到development/soft_labels
     
 

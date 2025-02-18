@@ -10,7 +10,7 @@ import config
 import sed_eval
 import pandas as pd
 from data_generator import maestroDataset
-
+import config
 
 def load_merged_data(_feat_folder, _lab_folder,  _fold=None):
     # Load features (mbe)
@@ -43,9 +43,9 @@ def train():
     stop_iteration = 150
     learning_rate = 1e-3 
     patience = int(0.6*stop_iteration)
-    holdout_fold = np.arange(1, 6)
-    seq_len = 200
-    batch_size = 32
+    holdout_fold = np.arange(1, 6) #折数
+    seq_len = 200 #？？？
+    batch_size = 64
     
     # CRNN model definition   
     cnn_filters = 128       # Number of filters in the CNN
@@ -65,16 +65,10 @@ def train():
         time_resolution=1.0
     )
 
-
     # Create output folders
-    output_model = 'model_crnn'
-    create_folder(output_model)
-
-    output_folder = 'dev_txt_scores'
-    create_folder(output_folder)
-
-    output_folder_soft = 'dev_txt_scores_soft'
-    create_folder(output_folder_soft)
+    create_folder(config.output_model)
+    create_folder(config.output_folder)
+    create_folder(config.output_folder_soft)
 
     for fold in holdout_fold:
 

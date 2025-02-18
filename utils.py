@@ -7,7 +7,7 @@ from dcase_util.containers import metadata
 import torch
 import torch.nn as nn
 
-eps = np.finfo(np.float).eps
+eps = np.finfo(np.float64).eps
 
 
 def load_audio(filename, mono=True, fs=44100):

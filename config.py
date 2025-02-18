@@ -1,7 +1,7 @@
 device = 'cuda'
 posterior_thresh = 0.5
-sample_rate = 44100
-hop_size = 8820
+sample_rate = 44100 # 采样率是44100
+hop_size = 8820 
 
 # 17 classes
 labels_soft = ['birds_singing', 'car', 'people talking', 'footsteps', 'children voices', 'wind_blowing',
@@ -52,3 +52,8 @@ class_labels_hard = {
     }
 
 classes_num_hard = len(labels_hard)
+
+
+output_model = '/root/autodl-fs/LOGANDRESULT/Task4b/result/baseline_model/'
+output_folder = '/root/autodl-fs/LOGANDRESULT/Task4b/result/baseline_dev_txt_scores'
+output_folder_soft = '/root/autodl-fs/LOGANDRESULT/Task4b/result/baseline_dev_txt_scores_soft'
