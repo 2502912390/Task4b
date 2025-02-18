@@ -284,6 +284,5 @@ def train():
 if __name__ == '__main__':
     # train()
 
-    path_groundtruth = '/autodl-fs/data/Task4b/metadata/gt_dev.csv'
-    result = get_threshold_independent(path_groundtruth, config.output_folder)
+    result = get_threshold_independent(config.scores)
     print(result)

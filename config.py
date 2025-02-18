@@ -63,3 +63,8 @@ output_folder_soft = os.path.join(result_path, task, 'dev_txt_scores_soft')
 
 development_feature = '/root/autodl-fs/dataset/MAESTRO_Real/development/features'
 development_soft_labels = '/root/autodl-fs/dataset/MAESTRO_Real/development/soft_labels'
+
+# 每次实验完记得改
+scores='/root/autodl-fs/LOGANDRESULT/Task4b/result/baseline/dev_txt_scores/'
+ground_truth='/autodl-fs/data/Task4b/metadata/gt_dev.csv'
+audio_durations= '/autodl-fs/data/Task4b/metadata/development_metadata.csv'

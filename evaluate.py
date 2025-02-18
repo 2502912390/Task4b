@@ -53,8 +53,6 @@ def eval_meta_hard(output_folder, audio_name, framewise_output):
     )
 
 
-
-
 def process_event(class_labels, frame_probabilities, threshold, hop_length_seconds):
     results = []
     for event_id, event_label in enumerate(class_labels):
@@ -101,13 +99,13 @@ def metric_perbatch(segment_based_metrics, framewise_output, target):
     return segment_based_metrics
 
 
-def get_threshold_independent(path_groundtruth, path_scores):
+def get_threshold_independent(path_scores):
     # Calculate threshold independent
 
     f_best, p_best, r_best, thresholds_best, stats_best = best_fscore(
-        scores='/root/autodl-fs/LOGANDRESULT/Task4b/result/baseline/dev_txt_scores/',
-        ground_truth='/autodl-fs/data/Task4b/metadata/gt_dev.csv',
-        audio_durations= '/autodl-fs/data/Task4b/metadata/development_metadata.csv', 
+        scores=path_scores,
+        ground_truth = config.ground_truth,
+        audio_durations = config.audio_durations, 
         segment_length=1.,
         min_precision=0.,
         min_recall=0.0,
