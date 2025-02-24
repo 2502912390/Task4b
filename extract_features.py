@@ -151,20 +151,21 @@ def extract_data(dev_file, audio_path, annotation_path, feat_folder):#dev_file=d
                 final_segment = final_segment.squeeze(0).squeeze(0).data.cpu().numpy()
                 # print(final_segment.shape) #(13283330,) 这个也不固定
 
-                mel = extract_mbe(final_segment, config.sample_rate, config.nfft, config.hop_size, config.nb_mel_bands, config.fmin, config.fmax) # [nmel, nframes]
-                # print(mel.shape)#(64, 1507) 这个也不固定
+                mel = extract_mbe(final_segment, config.sample_rate, config.nfft, config.hop_size, config.nb_mel_bands, config.fmin, config.fmax).T # [nmel, nframes]
+                # print(mel.shape)#(1507,64) 这个也不固定
                 class_segment.append(mel)
 
             class_segment = np.stack(class_segment, axis=0)
-            # print(class_segment.shape) #(17, 64, 1507)
+            # print(class_segment.shape) #(17, 1507, 64)
             tmp_feat_file = os.path.join(feat_folder, '{}.npz'.format(audio_name))
             np.savez(tmp_feat_file, class_segment) #保存mel到feat_folder为npz格式
 
-        # Extraction SOFT Annotation 已经有了 不需要
-        # annotation_file_soft = os.path.join(annotation_path, 'soft_labels_' + file + '.txt')
-        # annotations_soft = load_labels(annotation_file_soft, 200)
-        # tmp_lab_file = os.path.join(feat_folder, '{}_soft.npz'.format(audio_name))
-        # np.savez(tmp_lab_file, annotations_soft)# 保存对应的标签
+            # Extraction SOFT Annotation
+            nframes = class_segment.shape[1]
+            annotation_file_soft = os.path.join(annotation_path, 'soft_labels_' + file + '.txt')
+            annotations_soft = load_labels(annotation_file_soft, nframes)
+            tmp_lab_file = os.path.join(feat_folder, '{}_soft.npz'.format(audio_name))
+            np.savez(tmp_lab_file, annotations_soft)# 保存对应的标签
 
 # 对整段音频提取的
 def fold_normalization(feat_folder, output_folder):
