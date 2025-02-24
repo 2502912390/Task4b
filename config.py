@@ -59,27 +59,27 @@ class_labels_hard = {
 classes_num_hard = len(labels_hard)
 
 #预训练模型的路径
-music_speech_path = '/root/autodl-tmp/pretrained_models/LASS/music/music_speech_audioset_epoch_15_esc_89.98.pt'
-vocab_file = '/root/autodl-tmp/pretrained_models/LASS/roberta-base/model/vocab.json'
-merges_file = '/root/autodl-tmp/pretrained_models/LASS/roberta-base/model/merges.txt'
-RobertaModel_path = '/root/autodl-tmp/pretrained_models/LASS/roberta-base/model/roberta-base'
+music_speech_path = '/root/autodl-fs/pretrained_models/LASS/music/music_speech_audioset_epoch_15_esc_89.98.pt'
+vocab_file = '/root/autodl-fs/pretrained_models/LASS/roberta-base/model/vocab.json'
+merges_file = '/root/autodl-fs/pretrained_models/LASS/roberta-base/model/merges.txt'
+RobertaModel_path = '/root/autodl-fs/pretrained_models/LASS/roberta-base/model/roberta-base'
 
-separate_audio_config_yaml_16k = '/root/autodl-tmp/pretrained_models/LASS/resunet/Fsd_Clo_Caps_Autotest_ResUNet_16k.yaml'
-separate_audio_checkpoint_path_16k = '/root/autodl-tmp/pretrained_models/LASS/resunet/resunet_with_dprnn_16k/resunet_with_dprnn_16k/model-epoch=19-val_sdr=8.1018.ckpt'
-separate_audio_config_yaml_32k = '/root/autodl-tmp/pretrained_models/LASS/resunet/Fsd_Clo_Caps_Autotest_ResUNet_32k.yaml'
-separate_audio_checkpoint_path_32k = '/root/autodl-tmp/pretrained_models/LASS/resunet/resunet_with_dprnn_32k/resunet_with_dprnn_32k/model-epoch=01-val_sdr=8.6049.ckpt'
+separate_audio_config_yaml_16k = '/root/autodl-fs/pretrained_models/LASS/resunet/Fsd_Clo_Caps_Autotest_ResUNet_16k.yaml'
+separate_audio_checkpoint_path_16k = '/root/autodl-fs/pretrained_models/LASS/resunet/resunet_with_dprnn_16k/resunet_with_dprnn_16k/model-epoch=19-val_sdr=8.1018.ckpt'
+separate_audio_config_yaml_32k = '/root/autodl-fs/pretrained_models/LASS/resunet/Fsd_Clo_Caps_Autotest_ResUNet_32k.yaml'
+separate_audio_checkpoint_path_32k = '/root/autodl-fs/pretrained_models/LASS/resunet/resunet_with_dprnn_32k/resunet_with_dprnn_32k/model-epoch=01-val_sdr=8.6049.ckpt'
 
 
-# result_path = '/root/autodl-tmp/LOGANDRESULT/Task4b/result'
+# result_path = '/root/autodl-fs/LOGANDRESULT/Task4b/result'
 # task = "baseline_test"
 # output_model = os.path.join(result_path, task, 'model')
 # output_folder = os.path.join(result_path, task, 'dev_txt_scores')
 # output_folder_soft = os.path.join(result_path, task, 'dev_txt_scores_soft')
 
-# development_feature = '/root/autodl-tmp/dataset/MAESTRO_Real/development/features'
-# development_soft_labels = '/root/autodl-tmp/dataset/MAESTRO_Real/development/soft_labels'
+# development_feature = '/root/autodl-fs/dataset/MAESTRO_Real/development/features'
+# development_soft_labels = '/root/autodl-fs/dataset/MAESTRO_Real/development/soft_labels'
 
 # # 每次实验完记得改
-# scores='/root/autodl-tmp/LOGANDRESULT/Task4b/result/baseline/dev_txt_scores/'
-# ground_truth='/autodl-tmp/data/Task4b/metadata/gt_dev.csv'
-# audio_durations= '/autodl-tmp/data/Task4b/metadata/development_metadata.csv'
+# scores='/root/autodl-fs/LOGANDRESULT/Task4b/result/baseline/dev_txt_scores/'
+# ground_truth='/autodl-fs/data/Task4b/metadata/gt_dev.csv'
+# audio_durations= '/autodl-fs/data/Task4b/metadata/development_metadata.csv'
