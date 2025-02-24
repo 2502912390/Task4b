@@ -1,6 +1,8 @@
 import torch
 import numpy as np
 from torch.utils.data import Dataset
+from models.tq_sed import CRNN_LASS_A
+import config
 
 class maestroDataset(Dataset):
     def __init__(self, data, target):
@@ -51,28 +53,35 @@ def preprocess_data(_X, _Y, _X_val, _Y_val, _seq_len):# （17 29648 64）
 
 if __name__ == '__main__':
 
-    X = torch.randn(17,29648,64)
-    Y = torch.randn(29648,17)
-    X_val = torch.randn(17,29648,64)
-    Y_val = torch.randn(29648,17)
-    X = X.numpy()
-    Y = Y.numpy()
-    X_val = X_val.numpy()
-    Y_val = Y_val.numpy()
+    # X = torch.randn(17,29648,64)
+    # Y = torch.randn(29648,17)
+    # X_val = torch.randn(17,29648,64)
+    # Y_val = torch.randn(29648,17)
+    # X = X.numpy()
+    # Y = Y.numpy()
+    # X_val = X_val.numpy()
+    # Y_val = Y_val.numpy()
 
-    #(148, 17, 200, 64)  (148, 200, 17)
-    X, Y, X_val, Y_val = preprocess_data(X, Y, X_val, Y_val, 200)
+    # #(148, 17, 200, 64)  (148, 200, 17)
+    # X, Y, X_val, Y_val = preprocess_data(X, Y, X_val, Y_val, 200)
 
-    train_dataset = maestroDataset(X, Y)
-    validate_dataset = maestroDataset(X_val, Y_val)
+    # train_dataset = maestroDataset(X, Y)
+    # validate_dataset = maestroDataset(X_val, Y_val)
 
-    # Data loader
-    train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=3, shuffle=True,
-                                                num_workers=1, pin_memory=True)
+    # # Data loader
+    # train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=3, shuffle=True,
+    #                                             num_workers=1, pin_memory=True)
 
-    validate_loader = torch.utils.data.DataLoader(dataset=validate_dataset, batch_size=3, shuffle=True,
-                                                num_workers=1, pin_memory=True)
+    # validate_loader = torch.utils.data.DataLoader(dataset=validate_dataset, batch_size=3, shuffle=True,
+    #                                             num_workers=1, pin_memory=True)
 
-    for (batch_data, batch_target) in train_loader:
-        print(batch_data.shape) #torch.Size([bs, 17, 200, 64])
-        print(batch_target.shape) #torch.Size([3, 200, 17])
+    # for (batch_data, batch_target) in train_loader:
+    #     print(batch_data.shape) #torch.Size([bs, 17, 200, 64])
+    #     print(batch_target.shape) #torch.Size([bs, 200, 17])
+
+    X = torch.randn(3,17,200,64)
+    Y = torch.randn(3,200,17)
+    modelcrnn = CRNN_LASS_A(classes_num=config.classes_num_soft, cnn_filters=128, rnn_hid=32, _dropout_rate=0.2)
+    batch_output = modelcrnn(X)
+
+    print(batch_output.shape)

@@ -101,7 +101,7 @@ def fold_normalization(feat_folder, output_folder):
             if X_train is None:
                 X_train = tmp_mbe
             else:
-                X_train = np.concatenate((X_train, tmp_mbe), 0)
+                X_train = np.concatenate((X_train, tmp_mbe), 0) #在时间维度上拼接起来
             print("*******")
             print(X_train.shape)
         print("Over")

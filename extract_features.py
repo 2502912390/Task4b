@@ -187,7 +187,7 @@ def fold_normalization(feat_folder, output_folder):
             if X_train is None:
                 X_train = tmp_mbe
             else:
-                X_train = np.concatenate((X_train, tmp_mbe), 0) #这样拼接是否正确？
+                X_train = np.concatenate((X_train, tmp_mbe), 1)# 在时间维度拼接 之后是怎么解的？
 
         for file in val_files:#每一折里面的验证集数据拼接
             audio_name = file.split('/')[-1]
@@ -198,7 +198,7 @@ def fold_normalization(feat_folder, output_folder):
             if X_val is None:
                 X_val = tmp_mbe
             else:
-                X_val = np.concatenate((X_val, tmp_mbe), 0)
+                X_val = np.concatenate((X_val, tmp_mbe), 1)
 
         # Normalize the training data, and scale the testing data using the training data weights
         scaler = preprocessing.StandardScaler()# 对数据进行标准化
@@ -253,10 +253,10 @@ def merge_annotations_into_folds(feat_folder, labeltype, output_folder):
                 Y_val = label_mat
             else:
                 Y_val = np.concatenate((Y_val, label_mat), 0)
-
         lab_file = os.path.join(output_folder, 'merged_lab_{}_fold{}.npz'.format(labeltype, fold))
         np.savez(lab_file, Y_train, Y_val)
         
+
         for file in test_files:
             audio_name = file.split('/')[-1]
 
@@ -294,8 +294,6 @@ if __name__ == '__main__':
     fold_normalization(feat_folder, output_folder)# 对数据分折 一折内的训练+验证 测试保存为一个文件 并保存到development/features
     
     # Merge Soft Labels annotations
-    # output_folder = '/root/autodl-fs/dataset/MAESTRO_Real/development/soft_labels'
-    # utils.create_folder(output_folder)
-    # merge_annotations_into_folds(feat_folder, 'soft', output_folder)# 对标签分折 并保存到development/soft_labels
-    
-
+    output_folder = '/root/autodl-fs/dataset/MAESTRO_Real/development/lass_soft_labels'
+    utils.create_folder(output_folder)
+    merge_annotations_into_folds(feat_folder, 'soft', output_folder)# 对标签分折 并保存到development/soft_labels

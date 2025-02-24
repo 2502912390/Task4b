@@ -11,6 +11,7 @@ from utils import split_in_seqs, create_folder, move_data_to_device
 import pandas as pd
 import config
 from data_generator import maestroDataset
+from models.tq_sed import CRNN_LASS_A
 
 # 加载整段的mel，注意：保存文件的时候是训练何验证一起保存的
 def load_merged_data(_feat_folder, _lab_folder,  _fold=None):
@@ -78,14 +79,11 @@ def train():
 
     for fold in holdout_fold:
         # Load features and labels
-        # X(29648, 64)  Y(29648, 17)  这里应该会多一个维度 代表类别 （17 29648 64） （29648 17）
+        #（17 29648 64） （29648 17）
         X, Y, X_val, Y_val = load_merged_data(config.development_feature, config.development_soft_labels, fold)
 
-        # X(148, 200, 64)  Y(148, 200, 17)  148*200=29600 这里可以用循环来处理 每一个类别 (17, 148, 200, 64)  (148, 200, 17)
+        # #(148, 17, 200, 64)  (148, 200, 17)
         X, Y, X_val, Y_val = preprocess_data(X, Y, X_val, Y_val, seq_len)
-
-        X = X.transpose(0, 1)
-        X_val = X_val.transpose(0, 1)
 
         train_dataset = maestroDataset(X, Y)
         validate_dataset = maestroDataset(X_val, Y_val)
@@ -98,7 +96,9 @@ def train():
                                                     num_workers=1, pin_memory=True)
 
         # Prepare model
-        modelcrnn = my_CRNN(config.classes_num_soft, cnn_filters, rnn_hid, dropout_rate)#最后是17个类别？？？
+        # modelcrnn = my_CRNN(config.classes_num_soft, cnn_filters, rnn_hid, dropout_rate)#最后是17个类别？？？
+
+        modelcrnn = CRNN_LASS_A(classes_num=config.classes_num_soft, cnn_filters=cnn_filters, rnn_hid=rnn_hid, _dropout_rate=dropout_rate)
 
         if 'cuda' in device:
             modelcrnn.to(device)
@@ -290,32 +290,6 @@ def train():
 
 # python train_soft.py 
 if __name__ == '__main__':
-    # train()
-    # result = get_threshold_independent(config.scores)
-    # print(result)
-
-
-    X = torch.randn(17,29648,64)
-    Y = torch.randn(29648,17)
-    X_val = torch.randn(17,29648,64)
-    Y_val = torch.randn(29648,17)
-
-    # X(148, 200, 64)  Y(148, 200, 17)  148*200=29600 这里可以用循环来处理 每一个类别 (17, 148, 200, 64)  (148, 200, 17)
-    X, Y, X_val, Y_val = preprocess_data(X, Y, X_val, Y_val, 200)
-
-    X = X.transpose(0, 1)
-    X_val = X_val.transpose(0, 1)
-
-    train_dataset = maestroDataset(X, Y)
-    validate_dataset = maestroDataset(X_val, Y_val)
-
-    # Data loader
-    train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=3, shuffle=True,
-                                                num_workers=1, pin_memory=True)
-
-    validate_loader = torch.utils.data.DataLoader(dataset=validate_dataset, batch_size=3, shuffle=True,
-                                                num_workers=1, pin_memory=True)
-
-    for (batch_data, batch_target) in train_loader:
-        print(batch_data.shape)
-        print(batch_target.shape)
+    train()
+    result = get_threshold_independent(config.scores)
+    print(result)
