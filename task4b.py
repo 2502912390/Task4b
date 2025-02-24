@@ -291,5 +291,5 @@ def train():
 # python train_soft.py 
 if __name__ == '__main__':
     train()
-    result = get_threshold_independent(config.scores)
+    result = get_threshold_independent(config.output_folder)
     print(result)

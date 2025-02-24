@@ -40,7 +40,7 @@ classes_num_soft = len(labels_soft) #17
 
 
 
-# For the hard labels we have 11 classes 什么时候用到？？？
+# For the hard labels we have 11 classes 只在测试的时候用到？？？
 labels_hard = ['birds_singing', 'car', 'people talking', 'footsteps', 'children voices', 'wind_blowing',
           'brakes_squeaking', 'large_vehicle', 'cutlery and dishes', 'metro approaching', 'metro leaving']
 class_labels_hard = {
@@ -69,17 +69,17 @@ separate_audio_checkpoint_path_16k = '/root/autodl-fs/pretrained_models/LASS/res
 separate_audio_config_yaml_32k = '/root/autodl-fs/pretrained_models/LASS/resunet/Fsd_Clo_Caps_Autotest_ResUNet_32k.yaml'
 separate_audio_checkpoint_path_32k = '/root/autodl-fs/pretrained_models/LASS/resunet/resunet_with_dprnn_32k/resunet_with_dprnn_32k/model-epoch=01-val_sdr=8.6049.ckpt'
 
+# 用于测试的相关文件
+ground_truth='/autodl-fs/data/Task4b/metadata/gt_dev.csv'
+audio_durations= '/autodl-fs/data/Task4b/metadata/development_metadata.csv'
 
-# result_path = '/root/autodl-fs/LOGANDRESULT/Task4b/result'
-# task = "baseline_test"
-# output_model = os.path.join(result_path, task, 'model')
-# output_folder = os.path.join(result_path, task, 'dev_txt_scores')
-# output_folder_soft = os.path.join(result_path, task, 'dev_txt_scores_soft')
+# 用于训练的数据和标签
+development_feature = '/root/autodl-fs/dataset/MAESTRO_Real/development/lass_concat_features'
+development_soft_labels = '/root/autodl-fs/dataset/MAESTRO_Real/development/lass_soft_labels'
 
-# development_feature = '/root/autodl-fs/dataset/MAESTRO_Real/development/features'
-# development_soft_labels = '/root/autodl-fs/dataset/MAESTRO_Real/development/soft_labels'
-
-# # 每次实验完记得改
-# scores='/root/autodl-fs/LOGANDRESULT/Task4b/result/baseline/dev_txt_scores/'
-# ground_truth='/autodl-fs/data/Task4b/metadata/gt_dev.csv'
-# audio_durations= '/autodl-fs/data/Task4b/metadata/development_metadata.csv'
+# 结果保存
+task = "tq_sed_17cls" 
+result_path = '/root/autodl-fs/LOGANDRESULT/Task4b/result' 
+output_model = os.path.join(result_path, task, 'model')
+output_folder = os.path.join(result_path, task, 'dev_txt_scores')
+output_folder_soft = os.path.join(result_path, task, 'dev_txt_scores_soft')
