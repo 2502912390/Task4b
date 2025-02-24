@@ -1,8 +1,16 @@
 import os
 device = 'cuda'
 posterior_thresh = 0.5
+
+lass_sr = 32000 #lass处理的采样率
+lass_duration = 10 #lass处理的长度
+
 sample_rate = 44100 # 采样率是44100
 hop_size = 8820 
+nfft = int(hop_size * 2)
+nb_mel_bands = 64
+fmin = 50 
+fmax = 14000 
 
 # 17 classes
 labels_soft = ['birds_singing', 'car', 'people talking', 'footsteps', 'children voices', 'wind_blowing',

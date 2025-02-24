@@ -7,6 +7,10 @@ from dcase_util.containers import metadata
 import torch
 import torch.nn as nn
 
+from typing import Dict
+import yaml
+from LASS_codes.models.audiosep import AudioSep, get_model_class
+
 eps = np.finfo(np.float64).eps
 
 
@@ -121,3 +125,61 @@ def move_data_to_device(x, device):
         return x
 
     return x.to(device)
+
+def parse_yaml(config_yaml: str) -> Dict:
+
+    with open(config_yaml, "r") as fr:
+        return yaml.load(fr, Loader=yaml.FullLoader)
+    
+
+def load_ss_model(
+    configs: Dict,
+    checkpoint_path: str,
+    query_encoder: nn.Module
+) -> nn.Module:
+    r"""Load trained universal source separation model.
+
+    Args:
+        configs (Dict)
+        checkpoint_path (str): path of the checkpoint to load
+        device (str): e.g., "cpu" | "cuda"
+
+    Returns:
+        pl_model: pl.LightningModule
+    """
+
+    ss_model_type = configs["model"]["model_type"]
+    input_channels = configs["model"]["input_channels"]
+    output_channels = configs["model"]["output_channels"]
+    condition_size = configs["model"]["condition_size"]
+    dprnn = configs['model']['dprnn']
+    dprnn_layers = configs['model']['dprnn_layers']
+    dprnn_hidden = configs['model']['dprnn_hidden']
+
+    # Initialize separation model
+    SsModel = get_model_class(model_type=ss_model_type)
+
+    ss_model = SsModel(
+        input_channels=input_channels,
+        output_channels=output_channels,
+        condition_size=condition_size,
+        dprnn=dprnn,
+        dprnn_layers=dprnn_layers,
+        dprnn_hidden=dprnn_hidden
+    )
+
+    # Load PyTorch Lightning model
+    pl_model = AudioSep.load_from_checkpoint(
+        checkpoint_path=checkpoint_path,
+        strict=False,
+        ss_model=ss_model,
+        waveform_mixer=None,
+        query_encoder=query_encoder,
+        loss_function=None,
+        optimizer_type=None,
+        learning_rate=None,
+        lr_lambda_func=None,
+        map_location=torch.device('cpu'),
+    )
+
+    return pl_model
