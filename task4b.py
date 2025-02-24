@@ -1,16 +1,16 @@
-import os
-import numpy as np
 import torch
 import torch.optim as optim
 import torch.utils.data
 from evaluate import *
+import sed_eval
+
+import numpy as np
+import os
 from model import *
 from utils import split_in_seqs, create_folder, move_data_to_device
-import config 
-import sed_eval
 import pandas as pd
-from data_generator import maestroDataset
 import config
+from data_generator import maestroDataset
 
 # 加载整段的mel，注意：保存文件的时候是训练何验证一起保存的
 def load_merged_data(_feat_folder, _lab_folder,  _fold=None):
@@ -27,27 +27,34 @@ def load_merged_data(_feat_folder, _lab_folder,  _fold=None):
     return _X_train, _Y_train, _X_val, _Y_val
 
 
-def preprocess_data(_X, _Y, _X_val, _Y_val, _seq_len):
-    # split into sequences
-    _X = split_in_seqs(_X, _seq_len)
-    _Y = split_in_seqs(_Y, _seq_len)
+def preprocess_data(_X, _Y, _X_val, _Y_val, _seq_len):# （17 29648 64）
+    X = []
+    for i in range(17):# 遍历每一个类别 对每一个类别进行划分
+        X_cls = split_in_seqs(_X[i], _seq_len)#(148 200 64)
+        X.append(X_cls)
+    _X = np.stack(X, axis=1) #(148 17 200 64)
 
-    _X_val = split_in_seqs(_X_val, _seq_len)
+    X_val = []
+    for i in range(17):
+        X_val_cls = split_in_seqs(_X_val[i], _seq_len)
+        X_val.append(X_val_cls)
+    _X_val = np.stack(X_val, axis=1)
+
+    _Y = split_in_seqs(_Y, _seq_len)
     _Y_val = split_in_seqs(_Y_val, _seq_len)
 
     return _X, _Y, _X_val, _Y_val
 
-
 def train():
     # Arguments & parameters
     stop_iteration = 150
-    learning_rate = 1e-3 
+    learning_rate = 1e-3
     patience = int(0.6*stop_iteration)
     holdout_fold = np.arange(1, 6) #折数
     seq_len = 200 #数据要划分的长度
     batch_size = 31
-    
-    # CRNN model definition   
+
+    # CRNN model definition
     cnn_filters = 128       # Number of filters in the CNN
     rnn_hid = 32            # Number of RNN nodes.  Length of rnn_nb =  number of RNN layers
     dropout_rate = 0.2      # Dropout after each layer
@@ -70,14 +77,16 @@ def train():
     create_folder(config.output_folder_soft)
 
     for fold in holdout_fold:
-
         # Load features and labels
-        # X(29648, 64)  Y(29648, 17) 
+        # X(29648, 64)  Y(29648, 17)  这里应该会多一个维度 代表类别 （17 29648 64） （29648 17）
         X, Y, X_val, Y_val = load_merged_data(config.development_feature, config.development_soft_labels, fold)
 
-        # X(148, 200, 64)  Y(148, 200, 17)  148*200=29600
-        X, Y, X_val, Y_val = preprocess_data(X, Y, X_val, Y_val, seq_len) #划分数据为seq_len
-        
+        # X(148, 200, 64)  Y(148, 200, 17)  148*200=29600 这里可以用循环来处理 每一个类别 (17, 148, 200, 64)  (148, 200, 17)
+        X, Y, X_val, Y_val = preprocess_data(X, Y, X_val, Y_val, seq_len)
+
+        X = X.transpose(0, 1)
+        X_val = X_val.transpose(0, 1)
+
         train_dataset = maestroDataset(X, Y)
         validate_dataset = maestroDataset(X_val, Y_val)
 
@@ -90,7 +99,7 @@ def train():
 
         # Prepare model
         modelcrnn = my_CRNN(config.classes_num_soft, cnn_filters, rnn_hid, dropout_rate)#最后是17个类别？？？
-        
+
         if 'cuda' in device:
             modelcrnn.to(device)
         print('\nCreate model:')
@@ -104,9 +113,9 @@ def train():
         tr_loss, val_F1, val_ER = [0] * stop_iteration, [0] * stop_iteration, [0] * stop_iteration
 
         # Train on mini batches
-        tr_batch_loss = list()       
+        tr_batch_loss = list()
         for epoch in range(stop_iteration):
-            
+
             modelcrnn.train()
             # TRAIN
             for (batch_data, batch_target) in train_loader:
@@ -114,10 +123,11 @@ def train():
                 optimizer.zero_grad()
 
                 # batch_data:([bs, 200, 64])  batch_target:([bs, 200, 17])  batch_output:([bs, 200, 17])
+                # batch_data:([bs, 17 ,200, 64])  batch_target:([bs, 200, 17])  batch_output:([bs, 200, 17])
                 batch_output = modelcrnn(move_data_to_device(batch_data, device))
-                
+
                 loss = clip_mse(batch_output, move_data_to_device(batch_target,device))
-                
+
                 tr_batch_loss.append(loss.item())
 
                 # Backpropagation
@@ -125,7 +135,7 @@ def train():
                 optimizer.step()
 
             tr_loss[epoch] = np.mean(tr_batch_loss)
-        
+
             # VALIDATE
             modelcrnn.eval()
 
@@ -135,7 +145,7 @@ def train():
                     event_label_list=config.labels_hard,
                     time_resolution=1.0
                 )
-                
+
                 running_loss = 0.0
                 for (batch_data, batch_target) in validate_loader:
                     batch_output = modelcrnn(move_data_to_device(batch_data, device))
@@ -149,12 +159,12 @@ def train():
                     running_loss += loss
 
                 avg_vloss = running_loss /len(validate_loader)
-                
+
                 batch_segment_based_metrics_ER = segment_based_metrics_batch.overall_error_rate()
                 batch_segment_based_metrics_f1 = segment_based_metrics_batch.overall_f_measure()
                 val_F1[epoch] = batch_segment_based_metrics_f1['f_measure']
                 val_ER[epoch] = batch_segment_based_metrics_ER['error_rate']
-                
+
                 # 保存最佳模型
                 if avg_vloss < best_loss:
                     best_model = modelcrnn
@@ -186,16 +196,16 @@ def train():
                 break
 ##############################################
         # 训练完一个stop_iteration后进入测试
-        test_files = pd.read_csv('development_folds/fold{}_test.csv'.format(fold))['filename'].tolist()                                            
-        
+        test_files = pd.read_csv('development_folds/fold{}_test.csv'.format(fold))['filename'].tolist()
+
         segment_based_metrics_test = sed_eval.sound_event.SegmentBasedMetrics(
             event_label_list=config.labels_hard,
             time_resolution=1.0
         )
-        
+
         modelcrnn.load_state_dict(torch.load(f'{config.output_model}/best_fold{fold}.bin', map_location=device))
         modelcrnn.eval()
-        
+
         with torch.no_grad():
             nbatch = 0
             for file in test_files:
@@ -206,15 +216,15 @@ def train():
 
                 batch_target = np.load(f'development/soft_labels/lab_soft_{audio_name}_fold{fold}.npz')
                 target = batch_target['arr_0']
-                
+
                 # Feed into the model
                 batch_output = modelcrnn(data[None,:,:].to(device))
                 framewise_output = batch_output.squeeze().detach().cpu().numpy()
-                
+
                 # output for each file
                 eval_meta_hard(config.output_folder, audio_name, framewise_output)
                 eval_meta_soft(config.output_folder_soft, audio_name, framewise_output)
-                
+
                 # Append to evaluate the whole test fold at once
                 if nbatch == 0:
                     fold_target = target
@@ -224,7 +234,7 @@ def train():
                     fold_output = np.append(fold_output, framewise_output, axis=0)
 
                 nbatch += 1
-            
+
 
             reference = process_event(config.labels_soft, fold_target.T, config.posterior_thresh,
                                         config.hop_size / config.sample_rate)
@@ -274,13 +284,38 @@ def train():
     macroFs = []
     for c in class_wise_metrics:
         macroFs.append(class_wise_metrics[c]["f_measure"]["f_measure"])
-    
+
     print(f'\nMacro segment based F1: {round((sum(np.nan_to_num(macroFs))/config.classes_num_hard)*100,2)} ')
     print('\n')
 
 # python train_soft.py 
 if __name__ == '__main__':
     # train()
+    # result = get_threshold_independent(config.scores)
+    # print(result)
 
-    result = get_threshold_independent(config.scores)
-    print(result)
+
+    X = torch.randn(17,29648,64)
+    Y = torch.randn(29648,17)
+    X_val = torch.randn(17,29648,64)
+    Y_val = torch.randn(29648,17)
+
+    # X(148, 200, 64)  Y(148, 200, 17)  148*200=29600 这里可以用循环来处理 每一个类别 (17, 148, 200, 64)  (148, 200, 17)
+    X, Y, X_val, Y_val = preprocess_data(X, Y, X_val, Y_val, 200)
+
+    X = X.transpose(0, 1)
+    X_val = X_val.transpose(0, 1)
+
+    train_dataset = maestroDataset(X, Y)
+    validate_dataset = maestroDataset(X_val, Y_val)
+
+    # Data loader
+    train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=3, shuffle=True,
+                                                num_workers=1, pin_memory=True)
+
+    validate_loader = torch.utils.data.DataLoader(dataset=validate_dataset, batch_size=3, shuffle=True,
+                                                num_workers=1, pin_memory=True)
+
+    for (batch_data, batch_target) in train_loader:
+        print(batch_data.shape)
+        print(batch_target.shape)
