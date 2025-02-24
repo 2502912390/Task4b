@@ -12,12 +12,11 @@ import pandas as pd
 from data_generator import maestroDataset
 import config
 
-# 加载处理后的音频数据文件，注意：保存文件的时候是训练何验证一起保存的
+# 加载整段的mel，注意：保存文件的时候是训练何验证一起保存的
 def load_merged_data(_feat_folder, _lab_folder,  _fold=None):
     # Load features (mbe)
     feat_file_fold = os.path.join(_feat_folder, 'merged_mbe_fold{}.npz'.format( _fold))
     dmp = np.load(feat_file_fold)
-
     _X_train, _X_val = dmp['arr_0'], dmp['arr_1']
 
     # Load the corresponding labels
@@ -186,7 +185,7 @@ def train():
             # Stop learning
             if (epoch == stop_iteration) or (pat_cnt > patience):
                 break
-
+##############################################
         # 训练完一个stop_iteration后进入测试
         test_files = pd.read_csv('development_folds/fold{}_test.csv'.format(fold))['filename'].tolist()                                            
         

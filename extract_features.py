@@ -50,7 +50,7 @@ def extract_mbe(_y, _sr, _nfft, _hop, _nb_mel, _fmin, _fmax):
     
     return mel_spec
 
-
+#保存一整段音频的mel和soft_label 共98*2个 保存到features_mbe
 def extract_data(dev_file, audio_path, annotation_path, feat_folder):#dev_file=development_split.csv 包含所有音频文件
 # Extract features for all audio files
     # User set parameters
@@ -67,7 +67,7 @@ def extract_data(dev_file, audio_path, annotation_path, feat_folder):#dev_file=d
     for file in files:
         audio_name = file.split(os.path.sep)[-1]
         # MEL features
-        y, sr = utils.load_audio(os.path.join(audio_path, file+'.wav'), mono=is_mono, fs=fs) #加载音频
+        y, sr = utils.load_audio(os.path.join(audio_path, file+'.wav'), mono=is_mono, fs=fs) #加载音频 一整段 这里也是直接加载44100采样率的
         mbe = extract_mbe(y, sr, nfft, hop_len, nb_mel_bands, fmin, fmax).T #计算mel频谱
         tmp_feat_file = os.path.join(feat_folder, '{}.npz'.format(audio_name))
         np.savez(tmp_feat_file, mbe)#保存mel到feat_folder为npz格式
@@ -80,14 +80,9 @@ def extract_data(dev_file, audio_path, annotation_path, feat_folder):#dev_file=d
         tmp_lab_file = os.path.join(feat_folder, '{}_soft.npz'.format(audio_name))
         np.savez(tmp_lab_file, annotations_soft)# 保存对应的标签
 
-
-
-# -----------------------------------------------------------------------
-# Feature Normalization
-# -----------------------------------------------------------------------
+# 对整段音频提取的
 def fold_normalization(feat_folder, output_folder):
     for fold in np.arange(1, 6):
-
         name = str(fold)
         # Load data 这几个文件规定了每一折中的train val test文件
         train_files = pd.read_csv('development_folds/fold{}_train.csv'.format(name))['filename'].tolist()
@@ -207,12 +202,12 @@ if __name__ == '__main__':
     utils.create_folder(feat_folder)
 
     # Extract mel features for all the development data
-    extract_data(dev_file, audio_path, annotation_path, feat_folder)#对音频文件保存mel何其label的np格式到feat_folder
+    extract_data(dev_file, audio_path, annotation_path, feat_folder)#对整段音频文件保存mel和其label的np格式到feat_folder
 
     # Normalize data into folds
     output_folder = 'development/features'
     utils.create_folder(output_folder)
-    fold_normalization(feat_folder, output_folder)# 对数据分折 并保存到development/features
+    fold_normalization(feat_folder, output_folder)# 对数据分折 一折内的训练+验证 测试保存为一个文件 并保存到development/features
     
     # Merge Soft Labels annotations
     output_folder = 'development/soft_labels'
