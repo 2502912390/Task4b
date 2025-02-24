@@ -95,7 +95,6 @@ def train():
             modelcrnn.to(device)
         print('\nCreate model:')
 
-
         # Optimizer
         optimizer = optim.Adam(modelcrnn.parameters(), lr=learning_rate, betas=(0.9, 0.999), eps=1e-08, weight_decay=0., amsgrad=False)
 
@@ -118,7 +117,7 @@ def train():
                 batch_output = modelcrnn(move_data_to_device(batch_data, device))
                 
                 loss = clip_mse(batch_output, move_data_to_device(batch_target,device))
-                    
+                
                 tr_batch_loss.append(loss.item())
 
                 # Backpropagation

@@ -13,7 +13,6 @@ from utils import (
     parse_yaml
 )
 import torch
-from extract_features import extract_mbe
 import numpy as np
 from typing import Dict
 
@@ -75,32 +74,37 @@ def extract_data(dev_file, audio_path, annotation_path, feat_folder):#dev_file=d
     files = pd.read_csv(dev_file)['filename']
     for file in files:
         audio_name = file.split(os.path.sep)[-1]
-        # MEL features
-        audio, sr = utils.load_audio(os.path.join(audio_path, file+'.wav'), mono=is_mono, fs=config.fs) #加载音频 一整段 这里也是直接加载44100采样率的
-        print(audio.shape)
-        
-        if audio.shape[0] == 2:
-            audio = (audio[0,:]+audio[1,:])/2
-            audio = audio.reshape(1,-1)
 
+        # audio, sr = torchaudio.load(os.path.join(audio_path, file+'.wav'), channels_first=True)
+        # if audio.shape[0] == 2: #这样处理是对的嘛？
+        #     audio = (audio[0,:]+audio[1,:])/2
+        #     audio = audio.reshape(1,-1)
+
+        # MEL features
+        audio, sr = utils.load_audio(os.path.join(audio_path, file+'.wav'), mono=is_mono, fs=config.sample_rate) #加载音频 一整段 这里也是直接加载44100采样率的
+        audio = torch.tensor(audio).unsqueeze(0)
+        # print(sr) # 44100
+        # print(audio.shape) #torch.Size([1,13283328])
+        
         # audio和训练好的lass sr不一样 所以要重采样统一
         if sr != config.lass_sr:
             audio_2 = torchaudio.functional.resample(audio, orig_freq=sr, new_freq=config.lass_sr)
         else:
             audio_2 = audio
-        print(audio_2.shape)
+        audio_2 = audio_2.float()
+        # print(audio_2.shape) #([1,9638697])
 
         class_segment = []
-        for caption in config.labels_hard:# 这里为什么只要label hard
-            conditions = pl_model.query_encoder.get_query_embed(
+        for caption in config.labels_soft:# 这里改成labels_soft 17个类别 为了匹配上标签
+            conditions = pl_model.query_encoder.get_query_embed( 
                                 modality='text',
                                 text=[caption],
                                 device=config.device 
                             )
 
-            n_sample = config.lass_sr * config.lass_dur #训练好了的lass处理的dur是固定的 所以要对audio进行切分处理
+            n_sample = config.lass_sr * config.lass_duration #训练好了的lass处理的dur是固定的 所以要对audio进行切分处理
             nums = audio_2.shape[-1] // n_sample #一个音频片段需要分几次来进行lass
-            print(nums) 
+            print(nums) # 30 
 
             for i in range(nums):
                 segment = audio_2[:, i*n_sample:(i+1)*n_sample] #对划分的音频片段再划分为10s段
@@ -146,7 +150,7 @@ def extract_data(dev_file, audio_path, annotation_path, feat_folder):#dev_file=d
             mel = extract_mbe(final_segment, config.sample_rate, config.nfft, config.hop_size, config.nb_mel_bands, config.fmin, config.fmax) # [nmel, nframes]
             print(mel.shape)
             class_segment.append(mel)
-
+        print("************************")
         class_segment = np.stack(class_segment, axis=0)
         print(class_segment.shape)
         tmp_feat_file = os.path.join(feat_folder, '{}.npz'.format(audio_name))
@@ -211,8 +215,6 @@ def fold_normalization(feat_folder, output_folder):
         
         print(f'\t{normalized_feat_file}')
         print(f'\ttrain {X_train.shape} val {X_val.shape}')
-
-
 
 def merge_annotations_into_folds(feat_folder, labeltype, output_folder):
     for fold in np.arange(1, 6):
@@ -279,14 +281,15 @@ if __name__ == '__main__':
 
     # Extract mel features for all the development data
     extract_data(dev_file, audio_path, annotation_path, feat_folder)#对整段音频文件保存mel和其label的np格式到feat_folder
-
+    
+    os.system("/usr/bin/shutdown")
     # # Normalize data into folds
-    # output_folder = 'development/features'
+    # output_folder = '/root/autodl-fs/dataset/MAESTRO_Real/development/lass_concat_features'
     # utils.create_folder(output_folder)
     # fold_normalization(feat_folder, output_folder)# 对数据分折 一折内的训练+验证 测试保存为一个文件 并保存到development/features
     
     # # Merge Soft Labels annotations
-    # output_folder = 'development/soft_labels'
+    # output_folder = '/root/autodl-fs/dataset/MAESTRO_Real/development/soft_labels'
     # utils.create_folder(output_folder)
     # merge_annotations_into_folds(feat_folder, 'soft', output_folder)# 对标签分折 并保存到development/soft_labels
     

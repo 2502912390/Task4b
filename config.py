@@ -62,6 +62,17 @@ class_labels_hard = {
 
 classes_num_hard = len(labels_hard)
 
+#预训练模型的路径
+music_speech_path = '/root/autodl-fs/pretrained_models/LASS/music/music_speech_audioset_epoch_15_esc_89.98.pt'
+vocab_file = '/root/autodl-fs/pretrained_models/LASS/roberta-base/model/vocab.json'
+merges_file = '/root/autodl-fs/pretrained_models/LASS/roberta-base/model/merges.txt'
+RobertaModel_path = '/root/autodl-fs/pretrained_models/LASS/roberta-base/model/roberta-base'
+
+separate_audio_config_yaml_16k = '/root/autodl-fs/pretrained_models/LASS/resunet/Fsd_Clo_Caps_Autotest_ResUNet_16k.yaml'
+separate_audio_checkpoint_path_16k = '/root/autodl-fs/pretrained_models/LASS/resunet/resunet_with_dprnn_16k/resunet_with_dprnn_16k/model-epoch=19-val_sdr=8.1018.ckpt'
+separate_audio_config_yaml_32k = '/root/autodl-fs/pretrained_models/LASS/resunet/Fsd_Clo_Caps_Autotest_ResUNet_32k.yaml'
+separate_audio_checkpoint_path_32k = '/root/autodl-fs/pretrained_models/LASS/resunet/resunet_with_dprnn_32k/resunet_with_dprnn_32k/model-epoch=01-val_sdr=8.6049.ckpt'
+
 
 result_path = '/root/autodl-fs/LOGANDRESULT/Task4b/result'
 task = "baseline_test"
