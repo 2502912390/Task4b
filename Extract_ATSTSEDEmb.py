@@ -149,11 +149,10 @@ def split_in_seqs(data, subdivs):
     return data
 
 def extract_atst_emb(dev_file, audio_path, save_folder):#dev_file=development_split.csv 包含所有音频文件
-# Extract features for all audio files
-    # inference_model = ATSTSEDInferencer(
-    #                 config.pretrained_path,
-    #                 config.model_config_path,
-    #                 overlap_dur=3)
+    inference_model = ATSTSEDInferencer(
+                    config.pretrained_path,
+                    config.model_config_path,
+                    overlap_dur=3)
     
     files = pd.read_csv(dev_file)['filename']
     os.makedirs(save_folder, exist_ok=True)
@@ -163,24 +162,17 @@ def extract_atst_emb(dev_file, audio_path, save_folder):#dev_file=development_sp
         audio_name = file.split(os.path.sep)[-1]
         # MEL features
         y, sr = utils.load_audio(os.path.join(audio_path, file+'.wav'), mono=True, fs=config.sample_rate)
-        audio_sep = split_in_seqs(y,config.segment)
-        print(audio_sep.shape)
-        split_num_audio = y.shape[0] // config.segment #以39.9为一段（对应seq_len=200）
-        print(split_num_audio)
-        
-        mel = extract_mbe(y, config.sample_rate, config.nfft, config.hop_size, config.nb_mel_bands, config.fmin, config.fmax).T
-        mel_sep = split_in_seqs(mel,200)
-        print(mel_sep.shape)
-        split_num_mel = mel[0]//200
-        print(split_num_mel)
+        # print(y.shape) #(13283328,)
+        audio_sep = split_in_seqs(y,config.segment) #正确的
+        # print(audio_sep.shape) #(7, 1759590, 1)
 
         audio_resampled = librosa.resample(y, orig_sr=sr, target_sr=16000)
         audio_resampled_tensor = torch.from_numpy(audio_resampled).float()
 
-        # # 一段一段来处理
-        # for i in split_num_audio:
-        #     feature = inference_model(audio_resampled_tensor) #(clip_num 156 128)
-        #     feature = feature.detach().cpu().numpy()
+        # 一段一段来处理
+        for i in audio_sep.shape[0]:
+            feature = inference_model(audio_resampled_tensor) #(clip_num 156 128)
+            feature = feature.detach().cpu().numpy()
         
         # tmp_feat_file = os.path.join(save_folder, '{}.npz'.format(audio_name))
         # np.savez(tmp_feat_file, feature)

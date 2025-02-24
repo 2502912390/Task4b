@@ -51,8 +51,8 @@ def train():
     learning_rate = 1e-3
     patience = int(0.6*stop_iteration)
     holdout_fold = np.arange(1, 6) #折数
-    seq_len = 200 #数据要划分的长度  此处的200 对应atst应该是多少？
-    batch_size = 31
+    seq_len = 200 #数据要划分的长度
+    batch_size = 16
 
     # CRNN model definition
     cnn_filters = 128       # Number of filters in the CNN
@@ -121,7 +121,6 @@ def train():
                 # Zero gradients for every batch
                 optimizer.zero_grad()
 
-                # batch_data:([bs, 200, 64])  batch_target:([bs, 200, 17])  batch_output:([bs, 200, 17])
                 # batch_data:([bs, 17 ,200, 64])  batch_target:([bs, 200, 17])  batch_output:([bs, 200, 17])
                 batch_output = modelcrnn(move_data_to_device(batch_data, device))
 

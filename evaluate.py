@@ -2,9 +2,11 @@ import os
 import numpy as np
 import config
 from dcase_util.containers import metadata
-import sed_scores_eval_my
-from sed_scores_eval_my.sed_scores_eval.segment_based.precision_recall import best_fscore
+# import sed_scores_eval_my
+# from sed_scores_eval_my.sed_scores_eval.segment_based.precision_recall import best_fscore
 
+import sed_scores_eval
+from sed_scores_eval import segment_based
 
 def find_contiguous_regions(activity_array):
     # Find the changes in the activity_array
@@ -102,7 +104,8 @@ def metric_perbatch(segment_based_metrics, framewise_output, target):
 def get_threshold_independent(path_scores):
     # Calculate threshold independent
 
-    f_best, p_best, r_best, thresholds_best, stats_best = best_fscore(
+    # f_best, p_best, r_best, thresholds_best, stats_best = best_fscore(
+    f_best, p_best, r_best, thresholds_best, stats_best = segment_based.best_fscore(
         scores=path_scores,
         ground_truth = config.ground_truth,
         audio_durations = config.audio_durations, 

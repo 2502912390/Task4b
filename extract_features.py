@@ -187,7 +187,7 @@ def fold_normalization(feat_folder, output_folder):
             if X_train is None:
                 X_train = tmp_mbe
             else:
-                X_train = np.concatenate((X_train, tmp_mbe), 1)# 在时间维度拼接 之后是怎么解的？
+                X_train = np.concatenate((X_train, tmp_mbe), 1)# 在时间维度拼接
 
         for file in val_files:#每一折里面的验证集数据拼接
             audio_name = file.split('/')[-1]
@@ -202,8 +202,17 @@ def fold_normalization(feat_folder, output_folder):
 
         # Normalize the training data, and scale the testing data using the training data weights
         scaler = preprocessing.StandardScaler()# 对数据进行标准化
-        X_train = scaler.fit_transform(X_train)
-        X_val = scaler.transform(X_val)
+
+        X_train_scaled = np.zeros_like(X_train) 
+        X_val_scaled = np.zeros_like(X_val) 
+        
+        # print(X_train.shape) #(17, 29648, 64)
+        for i in range(X_train.shape[0]):
+            X_train_scaled[i, :, :]  = scaler.fit_transform(X_train[i, :, :])
+            X_val_scaled[i, :, :] = scaler.transform(X_val[i, :, :])
+        X_train = X_train_scaled
+        X_val = X_val_scaled
+
 
         normalized_feat_file = os.path.join(output_folder, 'merged_mbe_fold{}.npz'.format(fold))
         np.savez(normalized_feat_file, X_train, X_val)# 一折的训练+验证数据保存到development/features
@@ -215,7 +224,12 @@ def fold_normalization(feat_folder, output_folder):
             tmp_feat_file = os.path.join(feat_folder, '{}.npz'.format(audio_name))
             dmp = np.load(tmp_feat_file)
             tmp_mbe = dmp['arr_0']
-            X_test = scaler.transform(tmp_mbe)
+
+            X_test_scaled = np.zeros_like(tmp_mbe) 
+            # print(tmp_mbe.shape) #(17, 1076, 64)
+            for i in range(tmp_mbe.shape[0]):
+                X_test_scaled[i, :, :] = scaler.transform(tmp_mbe[i, :, :])
+            X_test = X_test_scaled
             normalized_test_file = os.path.join(output_folder, 'test_{}_fold{}.npz'.format(audio_name, fold))
             np.savez(normalized_test_file, X_test)# 保存测试数据
         
@@ -273,7 +287,7 @@ def merge_annotations_into_folds(feat_folder, labeltype, output_folder):
 # ########################################
 #              Main script starts here
 # ########################################
-
+# ALL OK
 if __name__ == '__main__':
     # path to all the data
     audio_path = '/root/autodl-fs/dataset/MAESTRO_Real/development_audio'
@@ -285,8 +299,7 @@ if __name__ == '__main__':
     # utils.create_folder(feat_folder)
 
     # # Extract mel features for all the development data
-    # extract_data(dev_file, audio_path, annotation_path, feat_folder)#对整段音频文件保存mel和其label的np格式到feat_folder
-    # os.system("/usr/bin/shutdown")
+    extract_data(dev_file, audio_path, annotation_path, feat_folder)#对整段音频文件保存mel和其label的np格式到feat_folder
 
     # Normalize data into folds
     output_folder = '/root/autodl-fs/dataset/MAESTRO_Real/development/lass_concat_features'
@@ -297,3 +310,5 @@ if __name__ == '__main__':
     output_folder = '/root/autodl-fs/dataset/MAESTRO_Real/development/lass_soft_labels'
     utils.create_folder(output_folder)
     merge_annotations_into_folds(feat_folder, 'soft', output_folder)# 对标签分折 并保存到development/soft_labels
+
+    print("Over")
