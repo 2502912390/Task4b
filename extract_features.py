@@ -183,10 +183,11 @@ def fold_normalization(feat_folder, output_folder):
             tmp_feat_file = os.path.join(feat_folder, '{}.npz'.format(audio_name))
             dmp = np.load(tmp_feat_file)
             tmp_mbe = dmp['arr_0']
+
             if X_train is None:
                 X_train = tmp_mbe
             else:
-                X_train = np.concatenate((X_train, tmp_mbe), 0)
+                X_train = np.concatenate((X_train, tmp_mbe), 0) #这样拼接是否正确？
 
         for file in val_files:#每一折里面的验证集数据拼接
             audio_name = file.split('/')[-1]
@@ -281,18 +282,18 @@ if __name__ == '__main__':
     
     # Output
     feat_folder = '/root/autodl-fs/dataset/MAESTRO_Real/features_mbe_lass/'
-    utils.create_folder(feat_folder)
+    # utils.create_folder(feat_folder)
 
-    # Extract mel features for all the development data
-    extract_data(dev_file, audio_path, annotation_path, feat_folder)#对整段音频文件保存mel和其label的np格式到feat_folder
+    # # Extract mel features for all the development data
+    # extract_data(dev_file, audio_path, annotation_path, feat_folder)#对整段音频文件保存mel和其label的np格式到feat_folder
+    # os.system("/usr/bin/shutdown")
+
+    # Normalize data into folds
+    output_folder = '/root/autodl-fs/dataset/MAESTRO_Real/development/lass_concat_features'
+    utils.create_folder(output_folder)
+    fold_normalization(feat_folder, output_folder)# 对数据分折 一折内的训练+验证 测试保存为一个文件 并保存到development/features
     
-    os.system("/usr/bin/shutdown")
-    # # Normalize data into folds
-    # output_folder = '/root/autodl-fs/dataset/MAESTRO_Real/development/lass_concat_features'
-    # utils.create_folder(output_folder)
-    # fold_normalization(feat_folder, output_folder)# 对数据分折 一折内的训练+验证 测试保存为一个文件 并保存到development/features
-    
-    # # Merge Soft Labels annotations
+    # Merge Soft Labels annotations
     # output_folder = '/root/autodl-fs/dataset/MAESTRO_Real/development/soft_labels'
     # utils.create_folder(output_folder)
     # merge_annotations_into_folds(feat_folder, 'soft', output_folder)# 对标签分折 并保存到development/soft_labels

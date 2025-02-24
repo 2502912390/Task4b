@@ -96,10 +96,15 @@ def fold_normalization(feat_folder, output_folder):
             tmp_feat_file = os.path.join(feat_folder, '{}.npz'.format(audio_name))
             dmp = np.load(tmp_feat_file)
             tmp_mbe = dmp['arr_0']
+            print(tmp_mbe.shape)
+
             if X_train is None:
                 X_train = tmp_mbe
             else:
                 X_train = np.concatenate((X_train, tmp_mbe), 0)
+            print("*******")
+            print(X_train.shape)
+        print("Over")
 
         for file in val_files:#每一折里面的验证集数据拼接
             audio_name = file.split('/')[-1]
@@ -118,7 +123,7 @@ def fold_normalization(feat_folder, output_folder):
         X_val = scaler.transform(X_val)
 
         normalized_feat_file = os.path.join(output_folder, 'merged_mbe_fold{}.npz'.format(fold))
-        np.savez(normalized_feat_file, X_train, X_val)# 一折的训练+验证数据保存到development/features
+        # np.savez(normalized_feat_file, X_train, X_val)# 一折的训练+验证数据保存到development/features
 
         # For the test data save individually
         for file in test_files:
@@ -129,7 +134,7 @@ def fold_normalization(feat_folder, output_folder):
             tmp_mbe = dmp['arr_0']
             X_test = scaler.transform(tmp_mbe)
             normalized_test_file = os.path.join(output_folder, 'test_{}_fold{}.npz'.format(audio_name, fold))
-            np.savez(normalized_test_file, X_test)# 保存测试数据
+            # np.savez(normalized_test_file, X_test)# 保存测试数据
         
         print(f'\t{normalized_feat_file}')
         print(f'\ttrain {X_train.shape} val {X_val.shape}')
@@ -191,25 +196,25 @@ def merge_annotations_into_folds(feat_folder, labeltype, output_folder):
 
 if __name__ == '__main__':
     # path to all the data
-    audio_path = '/root/autodl-fs/dataset/MAESTRO_Real/development_audio'
-    annotation_path = '/root/autodl-fs/dataset/MAESTRO_Real/development_annotation'
-    dev_file = 'development_split.csv'
+    # audio_path = '/root/autodl-fs/dataset/MAESTRO_Real/development_audio'
+    # annotation_path = '/root/autodl-fs/dataset/MAESTRO_Real/development_annotation'
+    # dev_file = 'development_split.csv'
     
-    # Output
-    feat_folder = 'features_mbe/'
-    utils.create_folder(feat_folder)
+    # # Output
+    # feat_folder = 'features_mbe/'
+    # utils.create_folder(feat_folder)
 
-    # Extract mel features for all the development data
-    extract_data(dev_file, audio_path, annotation_path, feat_folder)#对整段音频文件保存mel和其label的np格式到feat_folder
+    # # Extract mel features for all the development data
+    # extract_data(dev_file, audio_path, annotation_path, feat_folder)#对整段音频文件保存mel和其label的np格式到feat_folder
 
     # Normalize data into folds
     output_folder = 'development/features'
     utils.create_folder(output_folder)
-    fold_normalization(feat_folder, output_folder)# 对数据分折 一折内的训练+验证 测试保存为一个文件 并保存到development/features
+    fold_normalization("/root/autodl-fs/dataset/MAESTRO_Real/features_mbe/", output_folder)# 对数据分折 一折内的训练+验证 测试保存为一个文件 并保存到development/features
     
     # Merge Soft Labels annotations
-    output_folder = 'development/soft_labels'
-    utils.create_folder(output_folder)
-    merge_annotations_into_folds(feat_folder, 'soft', output_folder)# 对标签分折 并保存到development/soft_labels
+    # output_folder = 'development/soft_labels'
+    # utils.create_folder(output_folder)
+    # merge_annotations_into_folds(feat_folder, 'soft', output_folder)# 对标签分折 并保存到development/soft_labels
     
 
