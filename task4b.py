@@ -27,7 +27,6 @@ def load_merged_data(_feat_folder, _lab_folder,  _fold=None):
 
     return _X_train, _Y_train, _X_val, _Y_val
 
-
 def preprocess_data(_X, _Y, _X_val, _Y_val, _seq_len):# （17 29648 64）
     X = []
     for i in range(17):# 遍历每一个类别 对每一个类别进行划分
@@ -52,7 +51,7 @@ def train():
     learning_rate = 1e-3
     patience = int(0.6*stop_iteration)
     holdout_fold = np.arange(1, 6) #折数
-    seq_len = 200 #数据要划分的长度
+    seq_len = 200 #数据要划分的长度  此处的200 对应atst应该是多少？
     batch_size = 31
 
     # CRNN model definition

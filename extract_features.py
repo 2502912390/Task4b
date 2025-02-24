@@ -41,7 +41,7 @@ def load_labels(file_name, nframes):
 # Feature extraction
 # -----------------------------------------------------------------------
 def extract_mbe(_y, _sr, _nfft, _hop, _nb_mel, _fmin, _fmax):
-    spec = np.abs(librosa.stft(_y, n_fft=_nfft, hop_length=_hop)) ** 1  # `power=1` 计算幅度谱
+    spec = np.abs(librosa.stft(_y, n_fft=_nfft, hop_length=_hop)) ** 1  
     mel_basis = librosa.filters.mel(sr=_sr, n_fft=_nfft, n_mels=_nb_mel, fmin=_fmin, fmax=_fmax)
     mel_spec = np.dot(mel_basis, spec)
     
@@ -149,7 +149,7 @@ def extract_data(dev_file, audio_path, annotation_path, feat_folder):#dev_file=d
                     final_segment = torchaudio.functional.resample(final_segment, orig_freq=config.lass_sr, new_freq=sr)
 
                 final_segment = final_segment.squeeze(0).squeeze(0).data.cpu().numpy()
-                # print(final_segment.shape) #(13283330,) 这个也不固定
+                # print(final_segment.shape) #(13283330,) 这个也不固定  301s
 
                 mel = extract_mbe(final_segment, config.sample_rate, config.nfft, config.hop_size, config.nb_mel_bands, config.fmin, config.fmax).T # [nmel, nframes]
                 # print(mel.shape)#(1507,64) 这个也不固定

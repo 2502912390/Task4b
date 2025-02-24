@@ -12,6 +12,8 @@ nb_mel_bands = 64
 fmin = 50 
 fmax = 14000 
 
+segment = int(39.9 * sample_rate) 
+
 # 17 classes
 labels_soft = ['birds_singing', 'car', 'people talking', 'footsteps', 'children voices', 'wind_blowing',
           'brakes_squeaking', 'large_vehicle', 'cutlery and dishes', 'furniture dragging', 'coffee machine',
@@ -68,6 +70,10 @@ separate_audio_config_yaml_16k = '/root/autodl-fs/pretrained_models/LASS/resunet
 separate_audio_checkpoint_path_16k = '/root/autodl-fs/pretrained_models/LASS/resunet/resunet_with_dprnn_16k/resunet_with_dprnn_16k/model-epoch=19-val_sdr=8.1018.ckpt'
 separate_audio_config_yaml_32k = '/root/autodl-fs/pretrained_models/LASS/resunet/Fsd_Clo_Caps_Autotest_ResUNet_32k.yaml'
 separate_audio_checkpoint_path_32k = '/root/autodl-fs/pretrained_models/LASS/resunet/resunet_with_dprnn_32k/resunet_with_dprnn_32k/model-epoch=01-val_sdr=8.6049.ckpt'
+
+# ATST
+pretrained_path = '/root/autodl-fs/pretrained_models/stage_2_wo_external.ckpt'
+model_config_path = '/root/autodl-fs/PrueBaseline/recipes/dcase2023_task4_baseline/confs/stage2.yaml'
 
 # 用于测试的相关文件
 ground_truth='/autodl-fs/data/Task4b/metadata/gt_dev.csv'
