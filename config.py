@@ -79,9 +79,13 @@ model_config_path = '/root/autodl-fs/PrueBaseline/recipes/dcase2023_task4_baseli
 ground_truth='/autodl-fs/data/Task4b/metadata/gt_dev.csv'
 audio_durations= '/autodl-fs/data/Task4b/metadata/development_metadata.csv'
 
-# 用于训练的数据和标签
-development_feature = '/root/autodl-fs/dataset/MAESTRO_Real/development/lass_concat_features'
-development_soft_labels = '/root/autodl-fs/dataset/MAESTRO_Real/development/lass_soft_labels'
+# 用于训练的数据和标签(lass)
+lass_development_feature = '/root/autodl-fs/dataset/MAESTRO_Real/development/lass_concat_features'
+lass_development_soft_labels = '/root/autodl-fs/dataset/MAESTRO_Real/development/lass_soft_labels'
+# 普通
+development_feature = '/root/autodl-fs/dataset/MAESTRO_Real/development/features/'
+development_soft_labels = '/root/autodl-fs/dataset/MAESTRO_Real/development/soft_labels/'
+
 
 # 结果保存
 task = "tq_sed_17cls" 

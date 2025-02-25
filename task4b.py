@@ -14,7 +14,7 @@ from data_generator import maestroDataset
 from models.tq_sed import CRNN_LASS_A
 
 # 加载整段的mel，注意：保存文件的时候是训练何验证一起保存的
-def load_merged_data(_feat_folder, _lab_folder,  _fold=None):
+def load_merged_data(_feat_folder, _lab_folder, _feat_folder_lass, _fold=None):
     # Load features (mbe)
     feat_file_fold = os.path.join(_feat_folder, 'merged_mbe_fold{}.npz'.format( _fold))
     dmp = np.load(feat_file_fold)
@@ -25,25 +25,31 @@ def load_merged_data(_feat_folder, _lab_folder,  _fold=None):
     dmp = np.load(lab_file_fold)
     _Y_train, _Y_val = dmp['arr_0'], dmp['arr_1']
 
-    return _X_train, _Y_train, _X_val, _Y_val
+    feat_file_fold_lass = os.path.join(_feat_folder_lass, 'merged_mbe_fold{}.npz'.format( _fold))
+    dmp = np.load(feat_file_fold_lass)
+    _X_train_lass, _X_val_lass = dmp['arr_0'], dmp['arr_1']
 
-def preprocess_data(_X, _Y, _X_val, _Y_val, _seq_len):# （17 29648 64）
-    X = []
+    return _X_train, _Y_train, _X_val, _Y_val, _X_train_lass, _X_val_lass
+
+def preprocess_data(_X, _Y, _X_val, _Y_val, _X_train_lass, _X_val_lass ,_seq_len):# （17 29648 64）
+    X_train_lass = []
     for i in range(17):# 遍历每一个类别 对每一个类别进行划分
-        X_cls = split_in_seqs(_X[i], _seq_len)#(148 200 64)
-        X.append(X_cls)
-    _X = np.stack(X, axis=1) #(148 17 200 64)
+        X_train_cls = split_in_seqs(_X_train_lass[i], _seq_len)#(148 200 64)
+        X_train_lass.append(X_train_cls)
+    _X_train_lass = np.stack(X_train_lass, axis=1) #(148 17 200 64)
 
-    X_val = []
+    X_val_lass = []
     for i in range(17):
-        X_val_cls = split_in_seqs(_X_val[i], _seq_len)
-        X_val.append(X_val_cls)
-    _X_val = np.stack(X_val, axis=1)
+        X_val_cls = split_in_seqs(_X_val_lass[i], _seq_len)
+        X_val_lass.append(X_val_cls)
+    _X_val_lass = np.stack(X_val_lass, axis=1)
 
+    _X = split_in_seqs(_X, _seq_len)
+    _X_val = split_in_seqs(_X_val, _seq_len)
     _Y = split_in_seqs(_Y, _seq_len)
     _Y_val = split_in_seqs(_Y_val, _seq_len)
 
-    return _X, _Y, _X_val, _Y_val
+    return _X, _Y, _X_val, _Y_val,_X_train_lass,_X_val_lass
 
 def train():
     # Arguments & parameters
@@ -79,13 +85,15 @@ def train():
     for fold in holdout_fold:
         # Load features and labels
         #（17 29648 64） （29648 17）
-        X, Y, X_val, Y_val = load_merged_data(config.development_feature, config.development_soft_labels, fold)
+        X, Y, X_val, Y_val, _X_train_lass, _X_val_lass = load_merged_data(config.development_feature, config.development_soft_labels, config.lass_development_feature ,fold)
+        print(_X_train_lass.shape)
 
         # #(148, 17, 200, 64)  (148, 200, 17)
-        X, Y, X_val, Y_val = preprocess_data(X, Y, X_val, Y_val, seq_len)
+        X, Y, X_val, Y_val, _X_train_lass,_X_val_lass = preprocess_data(X, Y, X_val, Y_val, _X_train_lass, _X_val_lass ,seq_len)
+        print(_X_train_lass.shape)
 
-        train_dataset = maestroDataset(X, Y)
-        validate_dataset = maestroDataset(X_val, Y_val)
+        train_dataset = maestroDataset(X, Y, _X_train_lass)
+        validate_dataset = maestroDataset(X_val, Y_val, _X_val_lass)
 
         # Data loader
         train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True,
@@ -117,7 +125,7 @@ def train():
 
             modelcrnn.train()
             # TRAIN
-            for (batch_data, sep_batch_data, batch_target) in train_loader:
+            for (batch_data, batch_target, sep_batch_data) in train_loader:
                 # Zero gradients for every batch
                 optimizer.zero_grad()
 
