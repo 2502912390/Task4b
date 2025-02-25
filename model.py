@@ -1,5 +1,7 @@
 import torch
 import torch.nn as nn
+import config
+from models.tq_sed import CRNN_LASS_A
 
 def clip_mse(output, target):
 
@@ -8,10 +10,11 @@ def clip_mse(output, target):
 
     return loss
 
-
-class my_CRNN(nn.Module):
+class Doubel_CRNN(nn.Module):
     def __init__(self, classes_num, cnn_filters, rnn_hid, _dropout_rate):
-        super(my_CRNN, self).__init__()
+        super(Doubel_CRNN, self).__init__()
+        self.local_net = CRNN_LASS_A(classes_num=classes_num, cnn_filters=cnn_filters, rnn_hid=rnn_hid, _dropout_rate=_dropout_rate)
+
         self.conv1 = nn.Conv2d(in_channels=1, out_channels=cnn_filters, kernel_size=(3, 3), padding='same')
         self.batch_norm1 = nn.BatchNorm2d(num_features=cnn_filters)
         
@@ -31,10 +34,10 @@ class my_CRNN(nn.Module):
 
         self.linear1 = nn.Linear(rnn_hid*2, rnn_hid)
 
-
         self.linear2 = nn.Linear(rnn_hid, classes_num)
 
-    def forward(self, input):
+    def forward(self, input, sep_input):
+        sep_x = self.local_net(sep_input)
 
         x = self.conv1(input[:,None,:,:])
 
@@ -63,7 +66,7 @@ class my_CRNN(nn.Module):
         x = self.linear1(recurrent)
         x = self.linear2(x)
         
-        return x
+        return x,sep_x
 
 
 

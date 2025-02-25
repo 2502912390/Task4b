@@ -95,9 +95,9 @@ def train():
                                                     num_workers=1, pin_memory=True)
 
         # Prepare model
-        # modelcrnn = my_CRNN(config.classes_num_soft, cnn_filters, rnn_hid, dropout_rate)#最后是17个类别？？？
+        modelcrnn = Doubel_CRNN(config.classes_num_soft, cnn_filters, rnn_hid, dropout_rate)#最后是17个类别？？？
 
-        modelcrnn = CRNN_LASS_A(classes_num=config.classes_num_soft, cnn_filters=cnn_filters, rnn_hid=rnn_hid, _dropout_rate=dropout_rate)
+        # modelcrnn = CRNN_LASS_A(classes_num=config.classes_num_soft, cnn_filters=cnn_filters, rnn_hid=rnn_hid, _dropout_rate=dropout_rate)
 
         if 'cuda' in device:
             modelcrnn.to(device)
@@ -117,14 +117,16 @@ def train():
 
             modelcrnn.train()
             # TRAIN
-            for (batch_data, batch_target) in train_loader:
+            for (batch_data, sep_batch_data, batch_target) in train_loader:
                 # Zero gradients for every batch
                 optimizer.zero_grad()
 
                 # batch_data:([bs, 17 ,200, 64])  batch_target:([bs, 200, 17])  batch_output:([bs, 200, 17])
-                batch_output = modelcrnn(move_data_to_device(batch_data, device))
+                batch_output, sep_batch_output= modelcrnn(move_data_to_device(batch_data, device),move_data_to_device(sep_batch_data, device))
 
-                loss = clip_mse(batch_output, move_data_to_device(batch_target,device))
+                loss1 = clip_mse(batch_output, move_data_to_device(batch_target,device))
+                loss2 = clip_mse(sep_batch_output, move_data_to_device(batch_target,device))
+                loss = 0.9*loss1+0.1*loss2
 
                 tr_batch_loss.append(loss.item())
 
@@ -145,10 +147,12 @@ def train():
                 )
 
                 running_loss = 0.0
-                for (batch_data, batch_target) in validate_loader:
-                    batch_output = modelcrnn(move_data_to_device(batch_data, device))
+                for (batch_data, sep_batch_data, batch_target) in validate_loader:
+                    batch_output, sep_batch_output= modelcrnn(move_data_to_device(batch_data, device),move_data_to_device(sep_batch_data, device))
 
-                    loss = clip_mse(batch_output, move_data_to_device(batch_target,device))
+                    loss1 = clip_mse(batch_output, move_data_to_device(batch_target,device))
+                    loss2 = clip_mse(sep_batch_output, move_data_to_device(batch_target,device))
+                    loss = 0.9*loss1+0.1*loss2
 
                     segment_based_metrics_batch = metric_perbatch(segment_based_metrics_batch,
                                                                   batch_output.reshape(-1, len(config.labels_soft)).detach().cpu().numpy(),
