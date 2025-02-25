@@ -59,7 +59,7 @@ class ATSTSEDInferencer(nn.Module):
             pretrained_path,
             model_config_path="./confs/stage2.yaml",
             overlap_dur=3, #重叠部分的时长
-            hard_threshold=0.5):
+            ):
         super().__init__()
 
         # Load model configurations
@@ -170,10 +170,15 @@ def extract_atst_emb(dev_file, audio_path, save_folder):#dev_file=development_sp
         audio_resampled_tensor = torch.from_numpy(audio_resampled).float()
 
         # 一段一段来处理
-        for i in audio_sep.shape[0]:
-            feature = inference_model(audio_resampled_tensor) #(clip_num 156 128)
+        segment_feature=[]
+        print(audio_sep.shape[0])
+        for i in range(audio_sep.shape[0]):#以39.9为一段
+            print(i)
+            feature = inference_model(audio_resampled_tensor) #一段内又会细分为多个10s被atst提取
             feature = feature.detach().cpu().numpy()
-        
+            segment_feature.append(feature)
+        np.stack(segment_feature, axis=0)
+        print(segment_feature.shape)
         # tmp_feat_file = os.path.join(save_folder, '{}.npz'.format(audio_name))
         # np.savez(tmp_feat_file, feature)
 
