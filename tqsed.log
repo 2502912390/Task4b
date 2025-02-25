@@ -1,1 +1,443 @@
 nohup: ignoring input
+Learning rate 0.001 - sequence length 200 - batch_size 16
+
+Create model:
+/root/miniconda3/envs/dcase2024/lib/python3.8/site-packages/torchvision/datapoints/__init__.py:12: UserWarning: The torchvision.datapoints and torchvision.transforms.v2 namespaces are still Beta. While we do not expect major breaking changes, some APIs may still change according to user feedback. Please submit any feedback you may have in this issue: https://github.com/pytorch/vision/issues/6753, and you can also check out https://github.com/pytorch/vision/issues/7319 to learn more about the APIs that we suspect might involve future changes. You can silence this warning by calling torchvision.disable_beta_transforms_warning().
+  warnings.warn(_BETA_TRANSFORMS_WARNING)
+/root/miniconda3/envs/dcase2024/lib/python3.8/site-packages/torchvision/transforms/v2/__init__.py:54: UserWarning: The torchvision.datapoints and torchvision.transforms.v2 namespaces are still Beta. While we do not expect major breaking changes, some APIs may still change according to user feedback. Please submit any feedback you may have in this issue: https://github.com/pytorch/vision/issues/6753, and you can also check out https://github.com/pytorch/vision/issues/7319 to learn more about the APIs that we suspect might involve future changes. You can silence this warning by calling torchvision.disable_beta_transforms_warning().
+  warnings.warn(_BETA_TRANSFORMS_WARNING)
+/root/miniconda3/envs/dcase2024/lib/python3.8/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+/root/miniconda3/envs/dcase2024/lib/python3.8/site-packages/torch/_utils.py:776: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  return self.fget.__get__(instance, owner)()
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    | Sens     Spec     Bacc     Acc     
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ | ------   ------   ------   ------  
+    birds_sing.. | 164     1     | 0.0%     0.0%     0.0%   | 1.01     1.00     0.01   | 0.0%     100.0%   50.0%    94.2%   
+    car          | 996     493   | 52.5%    79.3%    39.3%  | 0.71     0.61     0.10   | 39.3%    94.4%    66.8%    75.0%   
+    people tal.. | 1448    165   | 15.1%    73.9%    8.4%   | 0.95     0.92     0.03   | 8.4%     96.9%    52.7%    51.6%   
+    footsteps    | 550     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    80.6%   
+    children v.. | 24      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    99.2%   
+    wind_blowing | 0       0     | nan%     nan%     nan%   | 0.00     0.00     0.00   | 0.0%     100.0%   50.0%    100.0%  
+    brakes_squ.. | 34      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.8%   
+    large_vehi.. | 380     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    86.6%   
+    cutlery an.. | 58      1     | 0.0%     0.0%     0.0%   | 1.02     1.00     0.02   | 0.0%     100.0%   50.0%    97.9%   
+    metro appr.. | 150     34    | 22.8%    61.8%    14.0%  | 0.95     0.86     0.09   | 14.0%    99.5%    56.8%    95.0%   
+    metro leav.. | 88      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    96.9%   
+
+Epoch: 0 - Train loss: 0.067 - Val loss: 0.03 - val F1 23.29 - val ER 0.875 - best epoch 0 F1 23.29
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    | Sens     Spec     Bacc     Acc     
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ | ------   ------   ------   ------  
+    birds_sing.. | 164     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    94.2%   
+    car          | 996     772   | 77.8%    89.1%    69.1%  | 0.39     0.31     0.08   | 69.1%    95.4%    82.3%    86.2%   
+    people tal.. | 1448    487   | 42.5%    84.4%    28.4%  | 0.77     0.72     0.05   | 28.4%    94.5%    61.5%    60.8%   
+    footsteps    | 550     1     | 0.0%     0.0%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    80.6%   
+    children v.. | 24      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    99.2%   
+    wind_blowing | 0       0     | nan%     nan%     nan%   | 0.00     0.00     0.00   | 0.0%     100.0%   50.0%    100.0%  
+    brakes_squ.. | 34      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.8%   
+    large_vehi.. | 380     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    86.6%   
+    cutlery an.. | 58      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.0%   
+    metro appr.. | 150     62    | 30.2%    51.6%    21.3%  | 0.99     0.79     0.20   | 21.3%    98.9%    60.1%    94.8%   
+    metro leav.. | 88      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    96.9%   
+
+Epoch: 1 - Train loss: 0.044 - Val loss: 0.026 - val F1 43.38 - val ER 0.719 - best epoch 1 F1 43.38
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    | Sens     Spec     Bacc     Acc     
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ | ------   ------   ------   ------  
+    birds_sing.. | 164     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    94.2%   
+    car          | 996     916   | 84.1%    87.8%    80.7%  | 0.31     0.19     0.11   | 80.7%    93.9%    87.3%    89.3%   
+    people tal.. | 1448    487   | 44.4%    88.3%    29.7%  | 0.74     0.70     0.04   | 29.7%    95.9%    62.8%    62.1%   
+    footsteps    | 550     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    80.6%   
+    children v.. | 24      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    99.2%   
+    wind_blowing | 0       0     | nan%     nan%     nan%   | 0.00     0.00     0.00   | 0.0%     100.0%   50.0%    100.0%  
+    brakes_squ.. | 34      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.8%   
+    large_vehi.. | 380     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    86.6%   
+    cutlery an.. | 58      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.0%   
+    metro appr.. | 150     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    94.7%   
+    metro leav.. | 88      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    96.9%   
+
+Epoch: 2 - Train loss: 0.036 - Val loss: 0.025 - val F1 46.61 - val ER 0.689 - best epoch 2 F1 46.61
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    | Sens     Spec     Bacc     Acc     
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ | ------   ------   ------   ------  
+    birds_sing.. | 164     70    | 36.8%    61.4%    26.2%  | 0.90     0.74     0.16   | 26.2%    99.0%    62.6%    94.8%   
+    car          | 996     1042  | 89.4%    87.4%    91.5%  | 0.22     0.09     0.13   | 91.5%    92.9%    92.2%    92.4%   
+    people tal.. | 1448    978   | 61.7%    76.6%    51.7%  | 0.64     0.48     0.16   | 51.7%    83.5%    67.6%    67.3%   
+    footsteps    | 550     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    80.6%   
+    children v.. | 24      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    99.2%   
+    wind_blowing | 0       0     | nan%     nan%     nan%   | 0.00     0.00     0.00   | 0.0%     100.0%   50.0%    100.0%  
+    brakes_squ.. | 34      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.8%   
+    large_vehi.. | 380     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    86.6%   
+    cutlery an.. | 58      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.0%   
+    metro appr.. | 150     9     | 0.0%     0.0%     0.0%   | 1.06     1.00     0.06   | 0.0%     99.7%    49.8%    94.4%   
+    metro leav.. | 88      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    96.9%   
+
+Epoch: 3 - Train loss: 0.031 - Val loss: 0.023 - val F1 56.85 - val ER 0.589 - best epoch 3 F1 56.85
+Epoch: 4 - Train loss: 0.028 - Val loss: 0.025 - val F1 55.58 - val ER 0.601 - best epoch 3 F1 56.85
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    | Sens     Spec     Bacc     Acc     
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ | ------   ------   ------   ------  
+    birds_sing.. | 164     217   | 63.0%    55.3%    73.2%  | 0.86     0.27     0.59   | 73.2%    96.4%    84.8%    95.0%   
+    car          | 996     953   | 85.8%    87.7%    83.9%  | 0.28     0.16     0.12   | 83.9%    93.6%    88.8%    90.2%   
+    people tal.. | 1448    738   | 58.6%    86.7%    44.2%  | 0.63     0.56     0.07   | 44.2%    92.9%    68.6%    68.0%   
+    footsteps    | 550     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    80.6%   
+    children v.. | 24      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    99.2%   
+    wind_blowing | 0       0     | nan%     nan%     nan%   | 0.00     0.00     0.00   | 0.0%     100.0%   50.0%    100.0%  
+    brakes_squ.. | 34      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.8%   
+    large_vehi.. | 380     6     | 0.0%     0.0%     0.0%   | 1.02     1.00     0.02   | 0.0%     99.8%    49.9%    86.4%   
+    cutlery an.. | 58      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.0%   
+    metro appr.. | 150     33    | 9.8%     27.3%    6.0%   | 1.10     0.94     0.16   | 6.0%     99.1%    52.6%    94.2%   
+    metro leav.. | 88      1     | 2.2%     100.0%   1.1%   | 0.99     0.99     0.00   | 1.1%     100.0%   50.6%    96.9%   
+
+Epoch: 5 - Train loss: 0.026 - Val loss: 0.023 - val F1 55.0 - val ER 0.605 - best epoch 5 F1 55.0
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    | Sens     Spec     Bacc     Acc     
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ | ------   ------   ------   ------  
+    birds_sing.. | 164     201   | 67.9%    61.7%    75.6%  | 0.71     0.24     0.47   | 75.6%    97.1%    86.4%    95.9%   
+    car          | 996     991   | 88.4%    88.6%    88.2%  | 0.23     0.12     0.11   | 88.2%    93.9%    91.0%    91.9%   
+    people tal.. | 1448    1047  | 63.1%    75.2%    54.4%  | 0.64     0.46     0.18   | 54.4%    81.3%    67.8%    67.6%   
+    footsteps    | 550     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    80.6%   
+    children v.. | 24      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    99.2%   
+    wind_blowing | 0       0     | nan%     nan%     nan%   | 0.00     0.00     0.00   | 0.0%     100.0%   50.0%    100.0%  
+    brakes_squ.. | 34      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.8%   
+    large_vehi.. | 380     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    86.6%   
+    cutlery an.. | 58      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.0%   
+    metro appr.. | 150     20    | 11.8%    50.0%    6.7%   | 1.00     0.93     0.07   | 6.7%     99.6%    53.1%    94.7%   
+    metro leav.. | 88      25    | 28.3%    64.0%    18.2%  | 0.92     0.82     0.10   | 18.2%    99.7%    58.9%    97.1%   
+
+Epoch: 6 - Train loss: 0.024 - Val loss: 0.021 - val F1 58.78 - val ER 0.574 - best epoch 6 F1 58.78
+Epoch: 7 - Train loss: 0.023 - Val loss: 0.022 - val F1 57.95 - val ER 0.579 - best epoch 6 F1 58.78
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    | Sens     Spec     Bacc     Acc     
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ | ------   ------   ------   ------  
+    birds_sing.. | 164     177   | 71.0%    68.4%    73.8%  | 0.60     0.26     0.34   | 73.8%    97.9%    85.8%    96.5%   
+    car          | 996     1073  | 91.5%    88.3%    95.1%  | 0.18     0.05     0.13   | 95.1%    93.2%    94.1%    93.8%   
+    people tal.. | 1448    1068  | 66.2%    78.0%    57.5%  | 0.59     0.42     0.16   | 57.5%    83.1%    70.3%    70.1%   
+    footsteps    | 550     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    80.6%   
+    children v.. | 24      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    99.2%   
+    wind_blowing | 0       0     | nan%     nan%     nan%   | 0.00     0.00     0.00   | 0.0%     100.0%   50.0%    100.0%  
+    brakes_squ.. | 34      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.8%   
+    large_vehi.. | 380     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    86.6%   
+    cutlery an.. | 58      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.0%   
+    metro appr.. | 150     12    | 8.6%     58.3%    4.7%   | 0.99     0.95     0.03   | 4.7%     99.8%    52.2%    94.8%   
+    metro leav.. | 88      27    | 24.3%    51.9%    15.9%  | 0.99     0.84     0.15   | 15.9%    99.5%    57.7%    96.9%   
+
+Epoch: 8 - Train loss: 0.021 - Val loss: 0.02 - val F1 61.51 - val ER 0.546 - best epoch 8 F1 61.51
+Epoch: 9 - Train loss: 0.021 - Val loss: 0.021 - val F1 59.79 - val ER 0.565 - best epoch 8 F1 61.51
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    | Sens     Spec     Bacc     Acc     
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ | ------   ------   ------   ------  
+    birds_sing.. | 164     160   | 79.6%    80.6%    78.7%  | 0.40     0.21     0.19   | 78.7%    98.8%    88.8%    97.7%   
+    car          | 996     933   | 84.8%    87.7%    82.1%  | 0.29     0.18     0.12   | 82.1%    93.8%    87.9%    89.7%   
+    people tal.. | 1448    1292  | 76.1%    80.7%    72.0%  | 0.45     0.28     0.17   | 72.0%    82.1%    77.1%    77.0%   
+    footsteps    | 550     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    80.6%   
+    children v.. | 24      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    99.2%   
+    wind_blowing | 0       0     | nan%     nan%     nan%   | 0.00     0.00     0.00   | 0.0%     100.0%   50.0%    100.0%  
+    brakes_squ.. | 34      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.8%   
+    large_vehi.. | 380     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    86.6%   
+    cutlery an.. | 58      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.0%   
+    metro appr.. | 150     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    94.7%   
+    metro leav.. | 88      1     | 2.2%     100.0%   1.1%   | 0.99     0.99     0.00   | 1.1%     100.0%   50.6%    96.9%   
+
+Epoch: 10 - Train loss: 0.02 - Val loss: 0.017 - val F1 63.43 - val ER 0.524 - best epoch 10 F1 63.43
+Epoch: 11 - Train loss: 0.019 - Val loss: 0.018 - val F1 58.57 - val ER 0.576 - best epoch 10 F1 63.43
+Epoch: 12 - Train loss: 0.018 - Val loss: 0.02 - val F1 56.73 - val ER 0.597 - best epoch 10 F1 63.43
+Epoch: 13 - Train loss: 0.018 - Val loss: 0.019 - val F1 59.62 - val ER 0.57 - best epoch 10 F1 63.43
+Epoch: 14 - Train loss: 0.017 - Val loss: 0.021 - val F1 59.98 - val ER 0.561 - best epoch 10 F1 63.43
+Epoch: 15 - Train loss: 0.017 - Val loss: 0.018 - val F1 61.66 - val ER 0.545 - best epoch 10 F1 63.43
+Epoch: 16 - Train loss: 0.016 - Val loss: 0.018 - val F1 61.22 - val ER 0.546 - best epoch 10 F1 63.43
+Epoch: 17 - Train loss: 0.016 - Val loss: 0.018 - val F1 59.3 - val ER 0.567 - best epoch 10 F1 63.43
+Epoch: 18 - Train loss: 0.016 - Val loss: 0.018 - val F1 61.3 - val ER 0.551 - best epoch 10 F1 63.43
+Epoch: 19 - Train loss: 0.015 - Val loss: 0.019 - val F1 61.67 - val ER 0.543 - best epoch 10 F1 63.43
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    | Sens     Spec     Bacc     Acc     
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ | ------   ------   ------   ------  
+    birds_sing.. | 164     119   | 84.1%    100.0%   72.6%  | 0.27     0.27     0.00   | 72.6%    100.0%   86.3%    98.4%   
+    car          | 996     962   | 87.0%    88.6%    85.5%  | 0.26     0.14     0.11   | 85.5%    94.0%    89.8%    91.1%   
+    people tal.. | 1448    1177  | 72.8%    81.1%    66.0%  | 0.49     0.34     0.15   | 66.0%    84.1%    75.0%    74.8%   
+    footsteps    | 550     2     | 0.7%     100.0%   0.4%   | 1.00     1.00     0.00   | 0.4%     100.0%   50.2%    80.7%   
+    children v.. | 24      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    99.2%   
+    wind_blowing | 0       0     | nan%     nan%     nan%   | 0.00     0.00     0.00   | 0.0%     100.0%   50.0%    100.0%  
+    brakes_squ.. | 34      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.8%   
+    large_vehi.. | 380     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    86.6%   
+    cutlery an.. | 58      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.0%   
+    metro appr.. | 150     13    | 16.0%    100.0%   8.7%   | 0.91     0.91     0.00   | 8.7%     100.0%   54.3%    95.2%   
+    metro leav.. | 88      4     | 0.0%     0.0%     0.0%   | 1.05     1.00     0.05   | 0.0%     99.9%    49.9%    96.8%   
+
+Epoch: 20 - Train loss: 0.015 - Val loss: 0.015 - val F1 62.93 - val ER 0.535 - best epoch 20 F1 62.93
+Epoch: 21 - Train loss: 0.015 - Val loss: 0.017 - val F1 68.48 - val ER 0.472 - best epoch 20 F1 62.93
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    | Sens     Spec     Bacc     Acc     
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ | ------   ------   ------   ------  
+    birds_sing.. | 164     147   | 88.1%    93.2%    83.5%  | 0.23     0.16     0.06   | 83.5%    99.6%    91.6%    98.7%   
+    car          | 996     1013  | 89.1%    88.4%    89.9%  | 0.22     0.10     0.12   | 89.9%    93.6%    91.7%    92.3%   
+    people tal.. | 1448    1436  | 82.1%    82.5%    81.8%  | 0.36     0.18     0.17   | 81.8%    81.9%    81.8%    81.8%   
+    footsteps    | 550     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    80.6%   
+    children v.. | 24      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    99.2%   
+    wind_blowing | 0       0     | nan%     nan%     nan%   | 0.00     0.00     0.00   | 0.0%     100.0%   50.0%    100.0%  
+    brakes_squ.. | 34      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.8%   
+    large_vehi.. | 380     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    86.6%   
+    cutlery an.. | 58      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.0%   
+    metro appr.. | 150     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    94.7%   
+    metro leav.. | 88      23    | 27.0%    65.2%    17.0%  | 0.92     0.83     0.09   | 17.0%    99.7%    58.4%    97.1%   
+
+Epoch: 22 - Train loss: 0.014 - Val loss: 0.015 - val F1 68.53 - val ER 0.462 - best epoch 22 F1 68.53
+Epoch: 23 - Train loss: 0.014 - Val loss: 0.017 - val F1 61.26 - val ER 0.55 - best epoch 22 F1 68.53
+Epoch: 24 - Train loss: 0.014 - Val loss: 0.016 - val F1 63.39 - val ER 0.524 - best epoch 22 F1 68.53
+Epoch: 25 - Train loss: 0.014 - Val loss: 0.016 - val F1 64.45 - val ER 0.518 - best epoch 22 F1 68.53
+Epoch: 26 - Train loss: 0.013 - Val loss: 0.017 - val F1 66.46 - val ER 0.494 - best epoch 22 F1 68.53
+Epoch: 27 - Train loss: 0.013 - Val loss: 0.016 - val F1 62.89 - val ER 0.534 - best epoch 22 F1 68.53
+Epoch: 28 - Train loss: 0.013 - Val loss: 0.015 - val F1 65.96 - val ER 0.503 - best epoch 22 F1 68.53
+Epoch: 29 - Train loss: 0.013 - Val loss: 0.015 - val F1 62.19 - val ER 0.544 - best epoch 22 F1 68.53
+Epoch: 30 - Train loss: 0.013 - Val loss: 0.017 - val F1 63.94 - val ER 0.523 - best epoch 22 F1 68.53
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    | Sens     Spec     Bacc     Acc     
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ | ------   ------   ------   ------  
+    birds_sing.. | 164     124   | 81.2%    94.4%    71.3%  | 0.33     0.29     0.04   | 71.3%    99.7%    85.5%    98.1%   
+    car          | 996     968   | 86.3%    87.5%    85.0%  | 0.27     0.15     0.12   | 85.0%    93.4%    89.2%    90.5%   
+    people tal.. | 1448    1024  | 69.7%    84.1%    59.5%  | 0.52     0.41     0.11   | 59.5%    88.2%    73.8%    73.5%   
+    footsteps    | 550     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    80.6%   
+    children v.. | 24      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    99.2%   
+    wind_blowing | 0       0     | nan%     nan%     nan%   | 0.00     0.00     0.00   | 0.0%     100.0%   50.0%    100.0%  
+    brakes_squ.. | 34      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.8%   
+    large_vehi.. | 380     10    | 4.6%     90.0%    2.4%   | 0.98     0.98     0.00   | 2.4%     100.0%   51.2%    86.9%   
+    cutlery an.. | 58      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.0%   
+    metro appr.. | 150     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    94.7%   
+    metro leav.. | 88      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    96.9%   
+
+Epoch: 31 - Train loss: 0.012 - Val loss: 0.015 - val F1 60.95 - val ER 0.554 - best epoch 31 F1 60.95
+Epoch: 32 - Train loss: 0.012 - Val loss: 0.016 - val F1 64.62 - val ER 0.515 - best epoch 31 F1 60.95
+Epoch: 33 - Train loss: 0.012 - Val loss: 0.015 - val F1 62.09 - val ER 0.542 - best epoch 31 F1 60.95
+Epoch: 34 - Train loss: 0.012 - Val loss: 0.016 - val F1 64.9 - val ER 0.511 - best epoch 31 F1 60.95
+Epoch: 35 - Train loss: 0.012 - Val loss: 0.015 - val F1 65.03 - val ER 0.508 - best epoch 31 F1 60.95
+Epoch: 36 - Train loss: 0.012 - Val loss: 0.017 - val F1 61.61 - val ER 0.546 - best epoch 31 F1 60.95
+Epoch: 37 - Train loss: 0.011 - Val loss: 0.015 - val F1 63.31 - val ER 0.527 - best epoch 31 F1 60.95
+Epoch: 38 - Train loss: 0.011 - Val loss: 0.016 - val F1 60.16 - val ER 0.56 - best epoch 31 F1 60.95
+Epoch: 39 - Train loss: 0.011 - Val loss: 0.017 - val F1 65.21 - val ER 0.511 - best epoch 31 F1 60.95
+Epoch: 40 - Train loss: 0.011 - Val loss: 0.016 - val F1 68.55 - val ER 0.47 - best epoch 31 F1 60.95
+Epoch: 41 - Train loss: 0.011 - Val loss: 0.016 - val F1 62.25 - val ER 0.555 - best epoch 31 F1 60.95
+Epoch: 42 - Train loss: 0.011 - Val loss: 0.016 - val F1 67.36 - val ER 0.497 - best epoch 31 F1 60.95
+Epoch: 43 - Train loss: 0.011 - Val loss: 0.015 - val F1 64.91 - val ER 0.525 - best epoch 31 F1 60.95
+Epoch: 44 - Train loss: 0.011 - Val loss: 0.015 - val F1 61.44 - val ER 0.562 - best epoch 31 F1 60.95
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    | Sens     Spec     Bacc     Acc     
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ | ------   ------   ------   ------  
+    birds_sing.. | 164     135   | 85.6%    94.8%    78.0%  | 0.26     0.22     0.04   | 78.0%    99.7%    88.9%    98.5%   
+    car          | 996     976   | 87.4%    88.3%    86.5%  | 0.25     0.13     0.11   | 86.5%    93.8%    90.2%    91.3%   
+    people tal.. | 1448    1213  | 78.0%    85.6%    71.7%  | 0.40     0.28     0.12   | 71.7%    87.4%    79.6%    79.4%   
+    footsteps    | 550     100   | 12.3%    40.0%    7.3%   | 1.04     0.93     0.11   | 7.3%     97.4%    52.3%    79.9%   
+    children v.. | 24      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    99.2%   
+    wind_blowing | 0       0     | nan%     nan%     nan%   | 0.00     0.00     0.00   | 0.0%     100.0%   50.0%    100.0%  
+    brakes_squ.. | 34      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.8%   
+    large_vehi.. | 380     13    | 4.6%     69.2%    2.4%   | 0.99     0.98     0.01   | 2.4%     99.8%    51.1%    86.8%   
+    cutlery an.. | 58      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.0%   
+    metro appr.. | 150     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    94.7%   
+    metro leav.. | 88      23    | 30.6%    73.9%    19.3%  | 0.88     0.81     0.07   | 19.3%    99.8%    59.6%    97.3%   
+
+Epoch: 45 - Train loss: 0.01 - Val loss: 0.015 - val F1 65.93 - val ER 0.507 - best epoch 45 F1 65.93
+Epoch: 46 - Train loss: 0.01 - Val loss: 0.016 - val F1 67.5 - val ER 0.487 - best epoch 45 F1 65.93
+Epoch: 47 - Train loss: 0.01 - Val loss: 0.015 - val F1 67.25 - val ER 0.489 - best epoch 45 F1 65.93
+Epoch: 48 - Train loss: 0.01 - Val loss: 0.015 - val F1 64.77 - val ER 0.523 - best epoch 45 F1 65.93
+Epoch: 49 - Train loss: 0.01 - Val loss: 0.015 - val F1 65.48 - val ER 0.514 - best epoch 45 F1 65.93
+Epoch: 50 - Train loss: 0.01 - Val loss: 0.015 - val F1 67.25 - val ER 0.495 - best epoch 45 F1 65.93
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    | Sens     Spec     Bacc     Acc     
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ | ------   ------   ------   ------  
+    birds_sing.. | 164     157   | 82.9%    84.7%    81.1%  | 0.34     0.19     0.15   | 81.1%    99.1%    90.1%    98.1%   
+    car          | 996     962   | 86.1%    87.6%    84.6%  | 0.27     0.15     0.12   | 84.6%    93.5%    89.1%    90.4%   
+    people tal.. | 1448    1370  | 84.5%    86.9%    82.3%  | 0.30     0.18     0.12   | 82.3%    87.1%    84.7%    84.6%   
+    footsteps    | 550     42    | 4.7%     33.3%    2.5%   | 1.03     0.97     0.05   | 2.5%     98.8%    50.7%    80.1%   
+    children v.. | 24      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    99.2%   
+    wind_blowing | 0       0     | nan%     nan%     nan%   | 0.00     0.00     0.00   | 0.0%     100.0%   50.0%    100.0%  
+    brakes_squ.. | 34      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.8%   
+    large_vehi.. | 380     44    | 8.5%     40.9%    4.7%   | 1.02     0.95     0.07   | 4.7%     98.9%    51.8%    86.3%   
+    cutlery an.. | 58      2     | 0.0%     0.0%     0.0%   | 1.03     1.00     0.03   | 0.0%     99.9%    50.0%    97.9%   
+    metro appr.. | 150     15    | 10.9%    60.0%    6.0%   | 0.98     0.94     0.04   | 6.0%     99.8%    52.9%    94.8%   
+    metro leav.. | 88      10    | 10.2%    50.0%    5.7%   | 1.00     0.94     0.06   | 5.7%     99.8%    52.8%    96.9%   
+
+Epoch: 51 - Train loss: 0.01 - Val loss: 0.014 - val F1 68.16 - val ER 0.478 - best epoch 51 F1 68.16
+Epoch: 52 - Train loss: 0.01 - Val loss: 0.016 - val F1 65.26 - val ER 0.51 - best epoch 51 F1 68.16
+Epoch: 53 - Train loss: 0.01 - Val loss: 0.015 - val F1 64.75 - val ER 0.511 - best epoch 51 F1 68.16
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    | Sens     Spec     Bacc     Acc     
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ | ------   ------   ------   ------  
+    birds_sing.. | 164     135   | 86.3%    95.6%    78.7%  | 0.25     0.21     0.04   | 78.7%    99.8%    89.2%    98.6%   
+    car          | 996     1049  | 90.5%    88.2%    92.9%  | 0.20     0.07     0.12   | 92.9%    93.3%    93.1%    93.1%   
+    people tal.. | 1448    1209  | 79.0%    86.8%    72.4%  | 0.39     0.28     0.11   | 72.4%    88.5%    80.5%    80.3%   
+    footsteps    | 550     54    | 7.3%     40.7%    4.0%   | 1.02     0.96     0.06   | 4.0%     98.6%    51.3%    80.3%   
+    children v.. | 24      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    99.2%   
+    wind_blowing | 0       0     | nan%     nan%     nan%   | 0.00     0.00     0.00   | 0.0%     100.0%   50.0%    100.0%  
+    brakes_squ.. | 34      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.8%   
+    large_vehi.. | 380     89    | 14.1%    37.1%    8.7%   | 1.06     0.91     0.15   | 8.7%     97.7%    53.2%    85.8%   
+    cutlery an.. | 58      1     | 0.0%     0.0%     0.0%   | 1.02     1.00     0.02   | 0.0%     100.0%   50.0%    97.9%   
+    metro appr.. | 150     2     | 1.3%     50.0%    0.7%   | 1.00     0.99     0.01   | 0.7%     100.0%   50.3%    94.7%   
+    metro leav.. | 88      3     | 2.2%     33.3%    1.1%   | 1.01     0.99     0.02   | 1.1%     99.9%    50.5%    96.9%   
+
+Epoch: 54 - Train loss: 0.01 - Val loss: 0.014 - val F1 67.14 - val ER 0.486 - best epoch 54 F1 67.14
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    | Sens     Spec     Bacc     Acc     
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ | ------   ------   ------   ------  
+    birds_sing.. | 164     136   | 85.3%    94.1%    78.0%  | 0.27     0.22     0.05   | 78.0%    99.7%    88.9%    98.4%   
+    car          | 996     1015  | 88.7%    87.9%    89.6%  | 0.23     0.10     0.12   | 89.6%    93.3%    91.4%    92.0%   
+    people tal.. | 1448    1261  | 79.1%    84.9%    74.0%  | 0.39     0.26     0.13   | 74.0%    86.3%    80.1%    80.0%   
+    footsteps    | 550     25    | 7.0%     80.0%    3.6%   | 0.97     0.96     0.01   | 3.6%     99.8%    51.7%    81.1%   
+    children v.. | 24      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    99.2%   
+    wind_blowing | 0       0     | nan%     nan%     nan%   | 0.00     0.00     0.00   | 0.0%     100.0%   50.0%    100.0%  
+    brakes_squ.. | 34      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.8%   
+    large_vehi.. | 380     17    | 5.0%     58.8%    2.6%   | 0.99     0.97     0.02   | 2.6%     99.7%    51.2%    86.7%   
+    cutlery an.. | 58      2     | 0.0%     0.0%     0.0%   | 1.03     1.00     0.03   | 0.0%     99.9%    50.0%    97.9%   
+    metro appr.. | 150     13    | 14.7%    92.3%    8.0%   | 0.93     0.92     0.01   | 8.0%     100.0%   54.0%    95.1%   
+    metro leav.. | 88      6     | 10.6%    83.3%    5.7%   | 0.95     0.94     0.01   | 5.7%     100.0%   52.8%    97.0%   
+
+Epoch: 55 - Train loss: 0.009 - Val loss: 0.014 - val F1 67.16 - val ER 0.488 - best epoch 55 F1 67.16
+Epoch: 56 - Train loss: 0.009 - Val loss: 0.015 - val F1 65.87 - val ER 0.506 - best epoch 55 F1 67.16
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    | Sens     Spec     Bacc     Acc     
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ | ------   ------   ------   ------  
+    birds_sing.. | 164     167   | 87.6%    86.8%    88.4%  | 0.25     0.12     0.13   | 88.4%    99.2%    93.8%    98.6%   
+    car          | 996     997   | 87.8%    87.8%    87.9%  | 0.24     0.12     0.12   | 87.9%    93.4%    90.6%    91.4%   
+    people tal.. | 1448    1284  | 79.1%    84.2%    74.7%  | 0.39     0.25     0.14   | 74.7%    85.4%    80.0%    79.9%   
+    footsteps    | 550     146   | 17.2%    41.1%    10.9%  | 1.05     0.89     0.16   | 10.9%    96.2%    53.6%    79.7%   
+    children v.. | 24      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    99.2%   
+    wind_blowing | 0       0     | nan%     nan%     nan%   | 0.00     0.00     0.00   | 0.0%     100.0%   50.0%    100.0%  
+    brakes_squ.. | 34      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.8%   
+    large_vehi.. | 380     25    | 6.4%     52.0%    3.4%   | 1.00     0.97     0.03   | 3.4%     99.5%    51.5%    86.7%   
+    cutlery an.. | 58      1     | 0.0%     0.0%     0.0%   | 1.02     1.00     0.02   | 0.0%     100.0%   50.0%    97.9%   
+    metro appr.. | 150     28    | 18.0%    57.1%    10.7%  | 0.97     0.89     0.08   | 10.7%    99.6%    55.1%    94.9%   
+    metro leav.. | 88      15    | 21.4%    73.3%    12.5%  | 0.92     0.88     0.05   | 12.5%    99.9%    56.2%    97.1%   
+
+Epoch: 57 - Train loss: 0.009 - Val loss: 0.013 - val F1 67.15 - val ER 0.498 - best epoch 57 F1 67.15
+Epoch: 58 - Train loss: 0.009 - Val loss: 0.015 - val F1 68.8 - val ER 0.486 - best epoch 57 F1 67.15
+Epoch: 59 - Train loss: 0.009 - Val loss: 0.015 - val F1 66.69 - val ER 0.494 - best epoch 57 F1 67.15
+Epoch: 60 - Train loss: 0.009 - Val loss: 0.016 - val F1 65.02 - val ER 0.523 - best epoch 57 F1 67.15
+Epoch: 61 - Train loss: 0.009 - Val loss: 0.016 - val F1 58.95 - val ER 0.578 - best epoch 57 F1 67.15
+Epoch: 62 - Train loss: 0.009 - Val loss: 0.015 - val F1 64.81 - val ER 0.527 - best epoch 57 F1 67.15
+Epoch: 63 - Train loss: 0.009 - Val loss: 0.016 - val F1 61.75 - val ER 0.551 - best epoch 57 F1 67.15
+Epoch: 64 - Train loss: 0.009 - Val loss: 0.015 - val F1 67.95 - val ER 0.487 - best epoch 57 F1 67.15
+Epoch: 65 - Train loss: 0.009 - Val loss: 0.015 - val F1 67.44 - val ER 0.501 - best epoch 57 F1 67.15
+Epoch: 66 - Train loss: 0.009 - Val loss: 0.015 - val F1 63.37 - val ER 0.542 - best epoch 57 F1 67.15
+Epoch: 67 - Train loss: 0.008 - Val loss: 0.015 - val F1 64.88 - val ER 0.524 - best epoch 57 F1 67.15
+Epoch: 68 - Train loss: 0.008 - Val loss: 0.014 - val F1 65.68 - val ER 0.51 - best epoch 57 F1 67.15
+Epoch: 69 - Train loss: 0.008 - Val loss: 0.015 - val F1 66.31 - val ER 0.499 - best epoch 57 F1 67.15
+Epoch: 70 - Train loss: 0.008 - Val loss: 0.015 - val F1 64.77 - val ER 0.516 - best epoch 57 F1 67.15
+Epoch: 71 - Train loss: 0.008 - Val loss: 0.015 - val F1 63.43 - val ER 0.542 - best epoch 57 F1 67.15
+Epoch: 72 - Train loss: 0.008 - Val loss: 0.015 - val F1 68.8 - val ER 0.462 - best epoch 57 F1 67.15
+Epoch: 73 - Train loss: 0.008 - Val loss: 0.015 - val F1 66.95 - val ER 0.487 - best epoch 57 F1 67.15
+Epoch: 74 - Train loss: 0.008 - Val loss: 0.015 - val F1 67.29 - val ER 0.49 - best epoch 57 F1 67.15
+Epoch: 75 - Train loss: 0.008 - Val loss: 0.015 - val F1 63.73 - val ER 0.531 - best epoch 57 F1 67.15
+Epoch: 76 - Train loss: 0.008 - Val loss: 0.016 - val F1 64.2 - val ER 0.529 - best epoch 57 F1 67.15
+Epoch: 77 - Train loss: 0.008 - Val loss: 0.015 - val F1 63.78 - val ER 0.529 - best epoch 57 F1 67.15
+Epoch: 78 - Train loss: 0.008 - Val loss: 0.017 - val F1 64.37 - val ER 0.524 - best epoch 57 F1 67.15
+Epoch: 79 - Train loss: 0.008 - Val loss: 0.016 - val F1 61.67 - val ER 0.55 - best epoch 57 F1 67.15
+Epoch: 80 - Train loss: 0.008 - Val loss: 0.016 - val F1 68.54 - val ER 0.477 - best epoch 57 F1 67.15
+Epoch: 81 - Train loss: 0.008 - Val loss: 0.015 - val F1 68.64 - val ER 0.48 - best epoch 57 F1 67.15
+Epoch: 82 - Train loss: 0.008 - Val loss: 0.015 - val F1 65.57 - val ER 0.513 - best epoch 57 F1 67.15
+Epoch: 83 - Train loss: 0.008 - Val loss: 0.015 - val F1 67.84 - val ER 0.493 - best epoch 57 F1 67.15
+Epoch: 84 - Train loss: 0.007 - Val loss: 0.015 - val F1 68.2 - val ER 0.491 - best epoch 57 F1 67.15
+Epoch: 85 - Train loss: 0.007 - Val loss: 0.014 - val F1 66.69 - val ER 0.498 - best epoch 57 F1 67.15
+Epoch: 86 - Train loss: 0.007 - Val loss: 0.016 - val F1 66.07 - val ER 0.511 - best epoch 57 F1 67.15
+Epoch: 87 - Train loss: 0.007 - Val loss: 0.015 - val F1 65.87 - val ER 0.508 - best epoch 57 F1 67.15
+Epoch: 88 - Train loss: 0.007 - Val loss: 0.014 - val F1 64.61 - val ER 0.522 - best epoch 57 F1 67.15
+Epoch: 89 - Train loss: 0.007 - Val loss: 0.015 - val F1 69.18 - val ER 0.468 - best epoch 57 F1 67.15
+Epoch: 90 - Train loss: 0.007 - Val loss: 0.014 - val F1 67.91 - val ER 0.493 - best epoch 57 F1 67.15
+Epoch: 91 - Train loss: 0.007 - Val loss: 0.014 - val F1 69.41 - val ER 0.457 - best epoch 57 F1 67.15
+Epoch: 92 - Train loss: 0.007 - Val loss: 0.014 - val F1 69.18 - val ER 0.46 - best epoch 57 F1 67.15
+Epoch: 93 - Train loss: 0.007 - Val loss: 0.014 - val F1 69.48 - val ER 0.464 - best epoch 57 F1 67.15
+Epoch: 94 - Train loss: 0.007 - Val loss: 0.016 - val F1 63.3 - val ER 0.548 - best epoch 57 F1 67.15
+Epoch: 95 - Train loss: 0.007 - Val loss: 0.015 - val F1 61.33 - val ER 0.558 - best epoch 57 F1 67.15
+Epoch: 96 - Train loss: 0.007 - Val loss: 0.014 - val F1 67.2 - val ER 0.495 - best epoch 57 F1 67.15
+Epoch: 97 - Train loss: 0.007 - Val loss: 0.015 - val F1 62.17 - val ER 0.554 - best epoch 57 F1 67.15
+Epoch: 98 - Train loss: 0.007 - Val loss: 0.015 - val F1 63.77 - val ER 0.549 - best epoch 57 F1 67.15
+Epoch: 99 - Train loss: 0.007 - Val loss: 0.016 - val F1 66.83 - val ER 0.498 - best epoch 57 F1 67.15
+Epoch: 100 - Train loss: 0.007 - Val loss: 0.014 - val F1 66.49 - val ER 0.51 - best epoch 57 F1 67.15
+Epoch: 101 - Train loss: 0.007 - Val loss: 0.015 - val F1 68.31 - val ER 0.487 - best epoch 57 F1 67.15
+	Decreasing learning rate to:0.0001
+Epoch: 102 - Train loss: 0.007 - Val loss: 0.015 - val F1 65.99 - val ER 0.522 - best epoch 57 F1 67.15
+Epoch: 103 - Train loss: 0.007 - Val loss: 0.014 - val F1 67.61 - val ER 0.496 - best epoch 57 F1 67.15
+Epoch: 104 - Train loss: 0.007 - Val loss: 0.014 - val F1 68.96 - val ER 0.48 - best epoch 57 F1 67.15
+Epoch: 105 - Train loss: 0.007 - Val loss: 0.014 - val F1 68.85 - val ER 0.483 - best epoch 57 F1 67.15
+Epoch: 106 - Train loss: 0.007 - Val loss: 0.013 - val F1 68.47 - val ER 0.488 - best epoch 57 F1 67.15
+Epoch: 107 - Train loss: 0.007 - Val loss: 0.014 - val F1 68.57 - val ER 0.487 - best epoch 57 F1 67.15
+Epoch: 108 - Train loss: 0.006 - Val loss: 0.014 - val F1 68.47 - val ER 0.488 - best epoch 57 F1 67.15
+Epoch: 109 - Train loss: 0.006 - Val loss: 0.013 - val F1 68.29 - val ER 0.485 - best epoch 57 F1 67.15
+Epoch: 110 - Train loss: 0.006 - Val loss: 0.014 - val F1 68.47 - val ER 0.487 - best epoch 57 F1 67.15
+Epoch: 111 - Train loss: 0.006 - Val loss: 0.014 - val F1 68.77 - val ER 0.484 - best epoch 57 F1 67.15
+Epoch: 112 - Train loss: 0.006 - Val loss: 0.014 - val F1 68.31 - val ER 0.496 - best epoch 57 F1 67.15
+Epoch: 113 - Train loss: 0.006 - Val loss: 0.014 - val F1 68.1 - val ER 0.498 - best epoch 57 F1 67.15
+Epoch: 114 - Train loss: 0.006 - Val loss: 0.014 - val F1 68.3 - val ER 0.49 - best epoch 57 F1 67.15
+Epoch: 115 - Train loss: 0.006 - Val loss: 0.014 - val F1 68.64 - val ER 0.486 - best epoch 57 F1 67.15
+Epoch: 116 - Train loss: 0.006 - Val loss: 0.014 - val F1 68.6 - val ER 0.487 - best epoch 57 F1 67.15
+Epoch: 117 - Train loss: 0.006 - Val loss: 0.014 - val F1 68.41 - val ER 0.489 - best epoch 57 F1 67.15
+Epoch: 118 - Train loss: 0.006 - Val loss: 0.014 - val F1 68.84 - val ER 0.483 - best epoch 57 F1 67.15
+Epoch: 119 - Train loss: 0.006 - Val loss: 0.014 - val F1 68.78 - val ER 0.487 - best epoch 57 F1 67.15
+Epoch: 120 - Train loss: 0.006 - Val loss: 0.014 - val F1 69.42 - val ER 0.476 - best epoch 57 F1 67.15
+Epoch: 121 - Train loss: 0.006 - Val loss: 0.014 - val F1 69.25 - val ER 0.478 - best epoch 57 F1 67.15
+Epoch: 122 - Train loss: 0.006 - Val loss: 0.014 - val F1 69.52 - val ER 0.472 - best epoch 57 F1 67.15
+Epoch: 123 - Train loss: 0.006 - Val loss: 0.013 - val F1 68.22 - val ER 0.49 - best epoch 57 F1 67.15
+Epoch: 124 - Train loss: 0.006 - Val loss: 0.014 - val F1 69.03 - val ER 0.481 - best epoch 57 F1 67.15
+Epoch: 125 - Train loss: 0.006 - Val loss: 0.014 - val F1 69.2 - val ER 0.479 - best epoch 57 F1 67.15
+Epoch: 126 - Train loss: 0.006 - Val loss: 0.014 - val F1 69.13 - val ER 0.485 - best epoch 57 F1 67.15
+Epoch: 127 - Train loss: 0.006 - Val loss: 0.013 - val F1 69.1 - val ER 0.482 - best epoch 57 F1 67.15
+Epoch: 128 - Train loss: 0.006 - Val loss: 0.013 - val F1 69.37 - val ER 0.475 - best epoch 57 F1 67.15
+Epoch: 129 - Train loss: 0.006 - Val loss: 0.014 - val F1 69.03 - val ER 0.482 - best epoch 57 F1 67.15
+Epoch: 130 - Train loss: 0.006 - Val loss: 0.014 - val F1 69.04 - val ER 0.482 - best epoch 57 F1 67.15
+Epoch: 131 - Train loss: 0.006 - Val loss: 0.014 - val F1 69.11 - val ER 0.479 - best epoch 57 F1 67.15
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    | Sens     Spec     Bacc     Acc     
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ | ------   ------   ------   ------  
+    birds_sing.. | 164     133   | 80.1%    89.5%    72.6%  | 0.36     0.27     0.09   | 72.6%    99.5%    86.0%    97.9%   
+    car          | 996     996   | 87.6%    87.6%    87.6%  | 0.25     0.12     0.12   | 87.6%    93.3%    90.4%    91.3%   
+    people tal.. | 1448    1442  | 83.9%    84.0%    83.7%  | 0.32     0.16     0.16   | 83.7%    83.5%    83.6%    83.6%   
+    footsteps    | 550     216   | 23.2%    41.2%    16.2%  | 1.07     0.84     0.23   | 16.2%    94.5%    55.3%    79.3%   
+    children v.. | 24      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    99.2%   
+    wind_blowing | 0       0     | nan%     nan%     nan%   | 0.00     0.00     0.00   | 0.0%     100.0%   50.0%    100.0%  
+    brakes_squ.. | 34      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.8%   
+    large_vehi.. | 380     71    | 13.7%    43.7%    8.2%   | 1.02     0.92     0.11   | 8.2%     98.4%    53.3%    86.3%   
+    cutlery an.. | 58      0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    98.0%   
+    metro appr.. | 150     21    | 22.2%    90.5%    12.7%  | 0.89     0.87     0.01   | 12.7%    99.9%    56.3%    95.3%   
+    metro leav.. | 88      29    | 34.2%    69.0%    22.7%  | 0.88     0.77     0.10   | 22.7%    99.7%    61.2%    97.3%   
+
+Epoch: 132 - Train loss: 0.006 - Val loss: 0.013 - val F1 69.47 - val ER 0.475 - best epoch 132 F1 69.47
+Epoch: 133 - Train loss: 0.006 - Val loss: 0.013 - val F1 69.41 - val ER 0.476 - best epoch 132 F1 69.47
+Epoch: 134 - Train loss: 0.006 - Val loss: 0.014 - val F1 69.17 - val ER 0.482 - best epoch 132 F1 69.47
+Epoch: 135 - Train loss: 0.006 - Val loss: 0.014 - val F1 68.94 - val ER 0.484 - best epoch 132 F1 69.47
+Epoch: 136 - Train loss: 0.006 - Val loss: 0.013 - val F1 68.49 - val ER 0.488 - best epoch 132 F1 69.47
+Epoch: 137 - Train loss: 0.006 - Val loss: 0.014 - val F1 68.08 - val ER 0.493 - best epoch 132 F1 69.47
+Epoch: 138 - Train loss: 0.006 - Val loss: 0.014 - val F1 68.38 - val ER 0.489 - best epoch 132 F1 69.47
+Epoch: 139 - Train loss: 0.006 - Val loss: 0.014 - val F1 68.16 - val ER 0.488 - best epoch 132 F1 69.47
+Epoch: 140 - Train loss: 0.006 - Val loss: 0.013 - val F1 68.93 - val ER 0.478 - best epoch 132 F1 69.47
+Epoch: 141 - Train loss: 0.005 - Val loss: 0.014 - val F1 69.15 - val ER 0.476 - best epoch 132 F1 69.47
+Epoch: 142 - Train loss: 0.005 - Val loss: 0.013 - val F1 69.22 - val ER 0.473 - best epoch 132 F1 69.47
+Epoch: 143 - Train loss: 0.005 - Val loss: 0.013 - val F1 68.79 - val ER 0.482 - best epoch 132 F1 69.47
+Epoch: 144 - Train loss: 0.005 - Val loss: 0.013 - val F1 69.25 - val ER 0.475 - best epoch 132 F1 69.47
+Epoch: 145 - Train loss: 0.005 - Val loss: 0.014 - val F1 69.17 - val ER 0.475 - best epoch 132 F1 69.47
+Epoch: 146 - Train loss: 0.005 - Val loss: 0.014 - val F1 68.73 - val ER 0.485 - best epoch 132 F1 69.47
+Epoch: 147 - Train loss: 0.005 - Val loss: 0.014 - val F1 69.16 - val ER 0.479 - best epoch 132 F1 69.47
+Epoch: 148 - Train loss: 0.005 - Val loss: 0.013 - val F1 68.98 - val ER 0.478 - best epoch 132 F1 69.47
+Epoch: 149 - Train loss: 0.005 - Val loss: 0.013 - val F1 68.68 - val ER 0.484 - best epoch 132 F1 69.47
+Traceback (most recent call last):
+  File "task4b.py", line 291, in <module>
+    train()
+  File "task4b.py", line 212, in train
+    batch_data = np.load(f'development/features/test_{audio_name}_fold{fold}.npz')
+  File "/root/miniconda3/envs/dcase2024/lib/python3.8/site-packages/numpy/lib/npyio.py", line 405, in load
+    fid = stack.enter_context(open(os_fspath(file), "rb"))
+FileNotFoundError: [Errno 2] No such file or directory: 'development/features/test_residential_area_07_fold1.npz'

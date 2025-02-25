@@ -50,7 +50,7 @@ def train():
     stop_iteration = 150
     learning_rate = 1e-3
     patience = int(0.6*stop_iteration)
-    holdout_fold = np.arange(1, 6) #折数
+    holdout_fold = np.arange(2, 6) #折数
     seq_len = 200 #数据要划分的长度
     batch_size = 16
 
@@ -192,6 +192,7 @@ def train():
             # Stop learning
             if (epoch == stop_iteration) or (pat_cnt > patience):
                 break
+        
 ##############################################
         # 训练完一个stop_iteration后进入测试
         test_files = pd.read_csv('development_folds/fold{}_test.csv'.format(fold))['filename'].tolist()
@@ -209,10 +210,10 @@ def train():
             for file in test_files:
                 # Load the corresponding audio file
                 audio_name = file.split('/')[-1]
-                batch_data = np.load(f'development/features/test_{audio_name}_fold{fold}.npz')
+                batch_data = np.load(f'/root/autodl-fs/dataset/MAESTRO_Real/development/lass_concat_features/test_{audio_name}_fold{fold}.npz')
                 data = torch.Tensor(batch_data['arr_0'])
 
-                batch_target = np.load(f'development/soft_labels/lab_soft_{audio_name}_fold{fold}.npz')
+                batch_target = np.load(f'/root/autodl-fs/dataset/MAESTRO_Real/development/lass_soft_labels/lab_soft_{audio_name}_fold{fold}.npz')
                 target = batch_target['arr_0']
 
                 # Feed into the model
