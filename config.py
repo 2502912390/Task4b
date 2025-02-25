@@ -72,8 +72,8 @@ separate_audio_config_yaml_32k = '/root/autodl-fs/pretrained_models/LASS/resunet
 separate_audio_checkpoint_path_32k = '/root/autodl-fs/pretrained_models/LASS/resunet/resunet_with_dprnn_32k/resunet_with_dprnn_32k/model-epoch=01-val_sdr=8.6049.ckpt'
 
 # ATST
-pretrained_path = '/root/autodl-fs/pretrained_models/stage_2_wo_external.ckpt'
-model_config_path = '/root/autodl-fs/PrueBaseline/recipes/dcase2023_task4_baseline/confs/stage2.yaml'
+pretrained_path = '/root/autodl-fs/pretrained_models/pretrained_models/stage_2_wo_external.ckpt'
+model_config_path = '/root/autodl-fs/pretrained_models/pretrained_models/stage2.yaml'
 
 # 用于测试的相关文件
 ground_truth='/autodl-fs/data/Task4b/metadata/gt_dev.csv'
@@ -85,7 +85,8 @@ lass_development_soft_labels = '/root/autodl-fs/dataset/MAESTRO_Real/development
 # 普通
 development_feature = '/root/autodl-fs/dataset/MAESTRO_Real/development/features/'
 development_soft_labels = '/root/autodl-fs/dataset/MAESTRO_Real/development/soft_labels/'
-
+# atst emb
+atst_emb = '/root/autodl-fs/dataset/MAESTRO_Real/development/atst_emb_concat/'
 
 # 结果保存
 task = "tq_sed_17cls" 

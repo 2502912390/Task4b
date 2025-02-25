@@ -14,7 +14,7 @@ from data_generator import maestroDataset
 from models.tq_sed import CRNN_LASS_A
 
 # 加载整段的mel，注意：保存文件的时候是训练何验证一起保存的
-def load_merged_data(_feat_folder, _lab_folder, _feat_folder_lass, _fold=None):
+def load_merged_data(_feat_folder, _lab_folder, _feat_folder_lass, _atst_emb,_fold=None):
     # Load features (mbe)
     feat_file_fold = os.path.join(_feat_folder, 'merged_mbe_fold{}.npz'.format( _fold))
     dmp = np.load(feat_file_fold)
@@ -29,7 +29,11 @@ def load_merged_data(_feat_folder, _lab_folder, _feat_folder_lass, _fold=None):
     dmp = np.load(feat_file_fold_lass)
     _X_train_lass, _X_val_lass = dmp['arr_0'], dmp['arr_1']
 
-    return _X_train, _Y_train, _X_val, _Y_val, _X_train_lass, _X_val_lass
+    atst_emb_fold = os.path.join(_atst_emb, 'merged_mbe_fold{}.npz'.format( _fold))
+    dmp = np.load(atst_emb_fold)
+    _X_train_atst, _X_val_atst = dmp['arr_0'], dmp['arr_1']
+
+    return _X_train, _Y_train, _X_val, _Y_val, _X_train_lass, _X_val_lass,_X_train_atst,_X_val_atst
 
 def preprocess_data(_X, _Y, _X_val, _Y_val, _X_train_lass, _X_val_lass ,_seq_len):# （17 29648 64）
     X_train_lass = []
@@ -56,9 +60,9 @@ def train():
     stop_iteration = 150
     learning_rate = 1e-3
     patience = int(0.6*stop_iteration)
-    holdout_fold = np.arange(2, 6) #折数
+    holdout_fold = np.arange(1, 6) #折数
     seq_len = 200 #数据要划分的长度
-    batch_size = 16
+    batch_size = 48
 
     # CRNN model definition
     cnn_filters = 128       # Number of filters in the CNN
@@ -84,13 +88,16 @@ def train():
 
     for fold in holdout_fold:
         # Load features and labels
-        #（17 29648 64） （29648 17）
-        X, Y, X_val, Y_val, _X_train_lass, _X_val_lass = load_merged_data(config.development_feature, config.development_soft_labels, config.lass_development_feature ,fold)
-        print(_X_train_lass.shape)
+        X, Y, X_val, Y_val, _X_train_lass, _X_val_lass ,atst_train_emb, atst_val_emb= load_merged_data(config.development_feature, config.development_soft_labels, config.lass_development_feature , config.atst_emb,fold)
+        # print(X.shape) #(30523, 64)
+        # print(Y.shape) #(30523, 17)
+        # print(_X_train_lass.shape) #(17, 30523, 64)
 
-        # #(148, 17, 200, 64)  (148, 200, 17)
         X, Y, X_val, Y_val, _X_train_lass,_X_val_lass = preprocess_data(X, Y, X_val, Y_val, _X_train_lass, _X_val_lass ,seq_len)
-        print(_X_train_lass.shape)
+        print(X.shape) #(152, 200, 64)
+        print(Y.shape) #(152, 200, 17)
+        print(_X_train_lass.shape) #(152, 17, 200, 64)
+        print(atst_train_emb.shape) # wait to test
 
         train_dataset = maestroDataset(X, Y, _X_train_lass)
         validate_dataset = maestroDataset(X_val, Y_val, _X_val_lass)
@@ -102,11 +109,8 @@ def train():
         validate_loader = torch.utils.data.DataLoader(dataset=validate_dataset, batch_size=batch_size, shuffle=True,
                                                     num_workers=1, pin_memory=True)
 
-        # Prepare model
+        # # Prepare model
         modelcrnn = Doubel_CRNN(config.classes_num_soft, cnn_filters, rnn_hid, dropout_rate)#最后是17个类别？？？
-
-        # modelcrnn = CRNN_LASS_A(classes_num=config.classes_num_soft, cnn_filters=cnn_filters, rnn_hid=rnn_hid, _dropout_rate=dropout_rate)
-
         if 'cuda' in device:
             modelcrnn.to(device)
         print('\nCreate model:')
@@ -129,8 +133,12 @@ def train():
                 # Zero gradients for every batch
                 optimizer.zero_grad()
 
-                # batch_data:([bs, 17 ,200, 64])  batch_target:([bs, 200, 17])  batch_output:([bs, 200, 17])
+                # print(batch_data.shape) #([16, 200, 64])
+                # print(batch_target.shape) #([16, 200, 17])
+                # print(sep_batch_data.shape) #([16, 17, 200, 64])
                 batch_output, sep_batch_output= modelcrnn(move_data_to_device(batch_data, device),move_data_to_device(sep_batch_data, device))
+                # print(batch_output.shape) #([16, 200, 17])
+                # print(sep_batch_output.shape) #([16, 200, 17])
 
                 loss1 = clip_mse(batch_output, move_data_to_device(batch_target,device))
                 loss2 = clip_mse(sep_batch_output, move_data_to_device(batch_target,device))
@@ -155,7 +163,7 @@ def train():
                 )
 
                 running_loss = 0.0
-                for (batch_data, sep_batch_data, batch_target) in validate_loader:
+                for (batch_data, batch_target, sep_batch_data) in validate_loader:
                     batch_output, sep_batch_output= modelcrnn(move_data_to_device(batch_data, device),move_data_to_device(sep_batch_data, device))
 
                     loss1 = clip_mse(batch_output, move_data_to_device(batch_target,device))
@@ -222,14 +230,22 @@ def train():
             for file in test_files:
                 # Load the corresponding audio file
                 audio_name = file.split('/')[-1]
-                batch_data = np.load(f'/root/autodl-fs/dataset/MAESTRO_Real/development/lass_concat_features/test_{audio_name}_fold{fold}.npz')
+                batch_data = np.load(f'/root/autodl-fs/dataset/MAESTRO_Real/development/features/test_{audio_name}_fold{fold}.npz')
                 data = torch.Tensor(batch_data['arr_0'])
 
-                batch_target = np.load(f'/root/autodl-fs/dataset/MAESTRO_Real/development/lass_soft_labels/lab_soft_{audio_name}_fold{fold}.npz')
+                lass_batch_data = np.load(f'/root/autodl-fs/dataset/MAESTRO_Real/development/lass_concat_features/test_{audio_name}_fold{fold}.npz')
+                lass_data = torch.Tensor(lass_batch_data['arr_0'])
+
+                batch_target = np.load(f'/root/autodl-fs/dataset/MAESTRO_Real/development/soft_labels/lab_soft_{audio_name}_fold{fold}.npz')
                 target = batch_target['arr_0']
 
+                # print(data.shape) #([1055, 64])
+                # print(lass_data.shape) #([17, 1055, 64])
                 # Feed into the model
-                batch_output = modelcrnn(data[None,:,:].to(device))
+                batch_output,sep_batch_output = modelcrnn(data[None,:,:].to(device),lass_data[None,:,:].to(device))
+                # print(batch_output.shape) #([1, 1055, 17])
+                # print(sep_batch_output.shape) #([1, 1055, 17])
+                
                 framewise_output = batch_output.squeeze().detach().cpu().numpy()
 
                 # output for each file

@@ -1,0 +1,110 @@
+nohup: ignoring input
+/root/miniconda3/envs/dcase2024/lib/python3.8/site-packages/torchvision/datapoints/__init__.py:12: UserWarning: The torchvision.datapoints and torchvision.transforms.v2 namespaces are still Beta. While we do not expect major breaking changes, some APIs may still change according to user feedback. Please submit any feedback you may have in this issue: https://github.com/pytorch/vision/issues/6753, and you can also check out https://github.com/pytorch/vision/issues/7319 to learn more about the APIs that we suspect might involve future changes. You can silence this warning by calling torchvision.disable_beta_transforms_warning().
+  warnings.warn(_BETA_TRANSFORMS_WARNING)
+/root/miniconda3/envs/dcase2024/lib/python3.8/site-packages/torchvision/transforms/v2/__init__.py:54: UserWarning: The torchvision.datapoints and torchvision.transforms.v2 namespaces are still Beta. While we do not expect major breaking changes, some APIs may still change according to user feedback. Please submit any feedback you may have in this issue: https://github.com/pytorch/vision/issues/6753, and you can also check out https://github.com/pytorch/vision/issues/7319 to learn more about the APIs that we suspect might involve future changes. You can silence this warning by calling torchvision.disable_beta_transforms_warning().
+  warnings.warn(_BETA_TRANSFORMS_WARNING)
+/root/miniconda3/envs/dcase2024/lib/python3.8/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+/root/miniconda3/envs/dcase2024/lib/python3.8/site-packages/torch/_utils.py:776: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  return self.fget.__get__(instance, owner)()
+Loading ATST from: /root/autodl-fs/pretrained_models/pretrained_models/stage_2_wo_external.ckpt
+Loading teacher from: /root/autodl-fs/pretrained_models/pretrained_models/stage_1.ckpt
+Model loaded
+cafe_restaurant/cafe_restaurant_07
+(7, 11, 156, 128)
+cafe_restaurant/cafe_restaurant_04
+(4, 11, 156, 128)
+cafe_restaurant/cafe_restaurant_11
+(6, 11, 156, 128)
+cafe_restaurant/cafe_restaurant_14
+(5, 11, 156, 128)
+cafe_restaurant/cafe_restaurant_08
+(6, 11, 156, 128)
+cafe_restaurant/cafe_restaurant_00
+(4, 11, 156, 128)
+cafe_restaurant/cafe_restaurant_06
+(7, 11, 156, 128)
+cafe_restaurant/cafe_restaurant_10
+(6, 11, 156, 128)
+cafe_restaurant/cafe_restaurant_12
+(5, 11, 156, 128)
+cafe_restaurant/cafe_restaurant_13
+(5, 11, 156, 128)
+city_center/city_center_04
+(6, 11, 156, 128)
+city_center/city_center_11
+(6, 11, 156, 128)
+city_center/city_center_12
+(6, 11, 156, 128)
+city_center/city_center_02
+(7, 11, 156, 128)
+city_center/city_center_05
+(6, 11, 156, 128)
+city_center/city_center_09
+(5, 11, 156, 128)
+city_center/city_center_07
+(6, 11, 156, 128)
+city_center/city_center_06
+(6, 11, 156, 128)
+city_center/city_center_14
+(4, 11, 156, 128)
+city_center/city_center_10
+(6, 11, 156, 128)
+grocery_store/grocery_store_09
+(6, 11, 156, 128)
+grocery_store/grocery_store_04
+(4, 11, 156, 128)
+grocery_store/grocery_store_08
+(5, 11, 156, 128)
+grocery_store/grocery_store_01
+(7, 11, 156, 128)
+grocery_store/grocery_store_03
+(4, 11, 156, 128)
+grocery_store/grocery_store_11
+(5, 11, 156, 128)
+grocery_store/grocery_store_00
+(4, 11, 156, 128)
+grocery_store/grocery_store_12
+(4, 11, 156, 128)
+grocery_store/grocery_store_02
+(7, 11, 156, 128)
+metro_station/metro_station_07
+(6, 11, 156, 128)
+metro_station/metro_station_00
+(7, 11, 156, 128)
+metro_station/metro_station_10
+(7, 11, 156, 128)
+metro_station/metro_station_05
+(6, 11, 156, 128)
+metro_station/metro_station_11
+(4, 11, 156, 128)
+metro_station/metro_station_01
+(7, 11, 156, 128)
+metro_station/metro_station_04
+(7, 11, 156, 128)
+metro_station/metro_station_02
+(7, 11, 156, 128)
+metro_station/metro_station_12
+(5, 11, 156, 128)
+residential_area/residential_area_07
+(5, 11, 156, 128)
+residential_area/residential_area_08
+(5, 11, 156, 128)
+residential_area/residential_area_09
+(4, 11, 156, 128)
+residential_area/residential_area_05
+(5, 11, 156, 128)
+residential_area/residential_area_12
+(5, 11, 156, 128)
+residential_area/residential_area_06
+(5, 11, 156, 128)
+residential_area/residential_area_14
+(5, 11, 156, 128)
+residential_area/residential_area_03
+(5, 11, 156, 128)
+residential_area/residential_area_04
+(5, 11, 156, 128)
+residential_area/residential_area_00
+(4, 11, 156, 128)
+residential_area/residential_area_01
+(4, 11, 156, 128)

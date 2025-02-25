@@ -7,24 +7,23 @@ nohup: ignoring input
   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
 /root/miniconda3/envs/dcase2024/lib/python3.8/site-packages/torch/_utils.py:776: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
   return self.fget.__get__(instance, owner)()
-	/root/autodl-fs/dataset/MAESTRO_Real/development/lass_concat_features/merged_mbe_fold1.npz
-	train (17, 29648, 64) val (17, 14343, 64)
-	/root/autodl-fs/dataset/MAESTRO_Real/development/lass_concat_features/merged_mbe_fold2.npz
-	train (17, 30523, 64) val (17, 14165, 64)
-	/root/autodl-fs/dataset/MAESTRO_Real/development/lass_concat_features/merged_mbe_fold3.npz
-	train (17, 31170, 64) val (17, 14867, 64)
-	/root/autodl-fs/dataset/MAESTRO_Real/development/lass_concat_features/merged_mbe_fold4.npz
-	train (17, 32184, 64) val (17, 12680, 64)
-	/root/autodl-fs/dataset/MAESTRO_Real/development/lass_concat_features/merged_mbe_fold5.npz
-	train (17, 33397, 64) val (17, 14963, 64)
-	/root/autodl-fs/dataset/MAESTRO_Real/development/lass_soft_labels/lab_soft_grocery_store_04_fold1.npz
-	train (29648, 17) val (14343, 17) 
-	/root/autodl-fs/dataset/MAESTRO_Real/development/lass_soft_labels/lab_soft_grocery_store_01_fold2.npz
-	train (30523, 17) val (14165, 17) 
-	/root/autodl-fs/dataset/MAESTRO_Real/development/lass_soft_labels/lab_soft_grocery_store_11_fold3.npz
-	train (31170, 17) val (14867, 17) 
-	/root/autodl-fs/dataset/MAESTRO_Real/development/lass_soft_labels/lab_soft_grocery_store_12_fold4.npz
-	train (32184, 17) val (12680, 17) 
-	/root/autodl-fs/dataset/MAESTRO_Real/development/lass_soft_labels/lab_soft_grocery_store_02_fold5.npz
-	train (33397, 17) val (14963, 17) 
-Over
+*********************
+(286, 156, 128)
+	/root/autodl-fs/dataset/MAESTRO_Real/development/atst_emb_concat/merged_mbe_fold1.npz
+	train (286, 156, 128) val (132, 156, 128)
+*********************
+(297, 156, 128)
+	/root/autodl-fs/dataset/MAESTRO_Real/development/atst_emb_concat/merged_mbe_fold2.npz
+	train (297, 156, 128) val (132, 156, 128)
+*********************
+(297, 156, 128)
+	/root/autodl-fs/dataset/MAESTRO_Real/development/atst_emb_concat/merged_mbe_fold3.npz
+	train (297, 156, 128) val (132, 156, 128)
+*********************
+(297, 156, 128)
+	/root/autodl-fs/dataset/MAESTRO_Real/development/atst_emb_concat/merged_mbe_fold4.npz
+	train (297, 156, 128) val (132, 156, 128)
+*********************
+(308, 156, 128)
+	/root/autodl-fs/dataset/MAESTRO_Real/development/atst_emb_concat/merged_mbe_fold5.npz
+	train (308, 156, 128) val (143, 156, 128)

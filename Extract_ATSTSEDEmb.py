@@ -163,28 +163,90 @@ def extract_atst_emb(dev_file, audio_path, save_folder):#dev_file=development_sp
         # MEL features
         y, sr = utils.load_audio(os.path.join(audio_path, file+'.wav'), mono=True, fs=config.sample_rate)
         # print(y.shape) #(13283328,)
-        audio_sep = split_in_seqs(y,config.segment) #正确的
-        # print(audio_sep.shape) #(7, 1759590, 1)
 
+        # 重采样
         audio_resampled = librosa.resample(y, orig_sr=sr, target_sr=16000)
         audio_resampled_tensor = torch.from_numpy(audio_resampled).float()
+        # print(audio_resampled_tensor.shape) #torch.Size([4819349])
+
+        #划分
+        segment  = int(39.9 * 16000) 
+        audio_sep = split_in_seqs(audio_resampled_tensor,segment) #正确的
+        # print(audio_sep.shape) #([7, 638400, 1])
 
         # 一段一段来处理
         segment_feature=[]
-        print(audio_sep.shape[0])
+        # print(audio_sep.shape[0])# 7
         for i in range(audio_sep.shape[0]):#以39.9为一段
-            print(i)
-            feature = inference_model(audio_resampled_tensor) #一段内又会细分为多个10s被atst提取
+            feature = inference_model(audio_sep[i].squeeze()) #一段内又会细分为多个10s被atst提取
             feature = feature.detach().cpu().numpy()
             segment_feature.append(feature)
-        np.stack(segment_feature, axis=0)
-        print(segment_feature.shape)
-        # tmp_feat_file = os.path.join(save_folder, '{}.npz'.format(audio_name))
-        # np.savez(tmp_feat_file, feature)
+            # print(feature.shape) #(11, 156, 128)
+        segment_feature = np.stack(segment_feature, axis=0)
+        print(segment_feature.shape) #(7, 11, 156, 128)  39.9s会被分成11组10s  前面两个维度共同代表一个音频片段
+
+        tmp_feat_file = os.path.join(save_folder, '{}.npz'.format(audio_name))
+        np.savez(tmp_feat_file, feature)
+
+def fold_normalization(feat_folder, output_folder):
+    for fold in np.arange(1, 6):
+        name = str(fold)
+        # Load data 这几个文件规定了每一折中的train val test文件
+        train_files = pd.read_csv('development_folds/fold{}_train.csv'.format(name))['filename'].tolist()
+        val_files = pd.read_csv('development_folds/fold{}_val.csv'.format(name))['filename'].tolist()
+        test_files = pd.read_csv('development_folds/fold{}_test.csv'.format(name))['filename'].tolist()
+
+        X_train, X_val = None, None
+        for file in train_files:#每一折里面的训练集数据拼接
+            audio_name = file.split('/')[-1]
+            
+            tmp_feat_file = os.path.join(feat_folder, '{}.npz'.format(audio_name))
+            dmp = np.load(tmp_feat_file)
+            tmp_mbe = dmp['arr_0']
+
+            if X_train is None:
+                X_train = tmp_mbe
+            else:
+                X_train = np.concatenate((X_train, tmp_mbe), 0) 
+        print("*********************")
+        print(X_train.shape)
+
+        for file in val_files:#每一折里面的验证集数据拼接
+            audio_name = file.split('/')[-1]
+
+            tmp_feat_file = os.path.join(feat_folder, '{}.npz'.format(audio_name))
+            dmp = np.load(tmp_feat_file)
+            tmp_mbe = dmp['arr_0']
+            if X_val is None:
+                X_val = tmp_mbe
+            else:
+                X_val = np.concatenate((X_val, tmp_mbe), 0)
+
+        feat_file = os.path.join(output_folder, 'merged_mbe_fold{}.npz'.format(fold))
+        np.savez(feat_file, X_train, X_val)# 一折的训练+验证数据保存到development/features
+
+        # For the test data save individually
+        for file in test_files:
+            audio_name = file.split('/')[-1]
+
+            tmp_feat_file = os.path.join(feat_folder, '{}.npz'.format(audio_name))
+            dmp = np.load(tmp_feat_file)
+            tmp_mbe = dmp['arr_0']
+
+            X_test = tmp_mbe
+            test_file = os.path.join(output_folder, 'test_{}_fold{}.npz'.format(audio_name, fold))
+            np.savez(test_file, X_test)# 保存测试数据
+        
+        print(f'\t{feat_file}')
+        print(f'\ttrain {X_train.shape} val {X_val.shape}')
 
 # interface
 if __name__ == "__main__":
     audio_path = '/root/autodl-fs/dataset/MAESTRO_Real/development_audio'
     dev_file = 'development_split.csv'
     save_path = '/root/autodl-fs/dataset/MAESTRO_Real/atst_emb/'
-    extract_atst_emb(dev_file,audio_path,save_path)
+    # extract_atst_emb(dev_file,audio_path,save_path)
+
+    output_folder = '/root/autodl-fs/dataset/MAESTRO_Real/development/atst_emb_concat'
+    utils.create_folder(output_folder)
+    fold_normalization(save_path, output_folder)
