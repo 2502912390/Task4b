@@ -43,7 +43,7 @@ class DySRLoss(nn.Module):
         super(DySRLoss, self).__init__()
         # 此处 loss 使用 reduction='none' 以便后续计算 per-sample 的 loss
         self.bce_loss = nn.BCELoss(reduction='none')
-        self.mse_loss = torch.nn.MSELoss(reduction='mean') #mean可能要改
+        self.mse_loss = nn.MSELoss(reduction='none') #mean可能要改
         self.weight = 0.5
 
     def forward(self, y_pred, y_true):
@@ -70,8 +70,8 @@ class DySRLoss(nn.Module):
 
         sample_weights = self.weight * scale
 
-        active_loss_tensor = self.bce_loss(active_frame, y_true)
-        inactive_loss_tensor = self.bce_loss(inactive_frame, y_true)
+        active_loss_tensor = self.mse_loss(active_frame, y_true)
+        inactive_loss_tensor = self.mse_loss(inactive_frame, y_true)
 
         # 在 cls 和 time_seq 两个维度上求平均，得到每个样本的平均 loss
         active_loss_per_sample = active_loss_tensor.mean(dim=[1, 2])
@@ -91,7 +91,7 @@ def train():
     patience = int(0.6*stop_iteration)
     holdout_fold = np.arange(1, 6) #折数
     seq_len = 200 #数据要划分的长度
-    batch_size = 31
+    batch_size = 172
     
     # CRNN model definition   
     cnn_filters = 128       # Number of filters in the CNN
@@ -251,10 +251,11 @@ def train():
             for file in test_files:
                 # Load the corresponding audio file
                 audio_name = file.split('/')[-1]
-                batch_data = np.load(f'development/features/test_{audio_name}_fold{fold}.npz')
+                
+                batch_data = np.load(f'/root/autodl-fs/dataset/MAESTRO_Real/development/features/test_{audio_name}_fold{fold}.npz')
                 data = torch.Tensor(batch_data['arr_0'])
 
-                batch_target = np.load(f'development/soft_labels/lab_soft_{audio_name}_fold{fold}.npz')
+                batch_target = np.load(f'/root/autodl-fs/dataset/MAESTRO_Real/development/soft_labels/lab_soft_{audio_name}_fold{fold}.npz')
                 target = batch_target['arr_0']
                 
                 # Feed into the model
