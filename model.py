@@ -33,7 +33,7 @@ class my_CRNN(nn.Module):
 
         self.linear2 = nn.Linear(rnn_hid, classes_num)
 
-        self.sigmoid = torch.sigmoid() 
+        self.sigmoid = nn.Sigmoid()
 
     def forward(self, input):
 

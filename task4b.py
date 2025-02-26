@@ -165,7 +165,7 @@ def train():
     patience = int(0.6*stop_iteration)
     holdout_fold = np.arange(1, 6) #折数
     seq_len = 200 #数据要划分的长度
-    batch_size = 172
+    batch_size = 32
     
     # CRNN model definition   
     cnn_filters = 128       # Number of filters in the CNN
@@ -189,7 +189,7 @@ def train():
     create_folder(config.output_folder)
     create_folder(config.output_folder_soft)
 
-    Loss = PaperSRL()
+    Loss = DyPaperSRL()
 
     for fold in holdout_fold:
 
