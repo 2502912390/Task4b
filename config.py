@@ -32,8 +32,6 @@ class_labels_soft = {
 
 classes_num_soft = len(labels_soft) #17
 
-
-
 # For the hard labels we have 11 classes
 labels_hard = ['birds_singing', 'car', 'people talking', 'footsteps', 'children voices', 'wind_blowing',
           'brakes_squeaking', 'large_vehicle', 'cutlery and dishes', 'metro approaching', 'metro leaving']
@@ -55,16 +53,16 @@ class_labels_hard = {
 classes_num_hard = len(labels_hard)
 
 
-result_path = '/root/autodl-fs/LOGANDRESULT/Task4b/result'
-task = "baseline_test"
+# 用于测试的相关文件
+ground_truth='/autodl-fs/data/Task4b/metadata/gt_dev.csv'
+audio_durations= '/autodl-fs/data/Task4b/metadata/development_metadata.csv'
+
+development_feature = '/root/autodl-fs/dataset/MAESTRO_Real/development/features/'
+development_soft_labels = '/root/autodl-fs/dataset/MAESTRO_Real/development/soft_labels/'
+
+# 结果保存
+task = "SRL" 
+result_path = '/root/autodl-fs/LOGANDRESULT/Task4b/result' 
 output_model = os.path.join(result_path, task, 'model')
 output_folder = os.path.join(result_path, task, 'dev_txt_scores')
 output_folder_soft = os.path.join(result_path, task, 'dev_txt_scores_soft')
-
-development_feature = '/root/autodl-fs/dataset/MAESTRO_Real/development/features'
-development_soft_labels = '/root/autodl-fs/dataset/MAESTRO_Real/development/soft_labels'
-
-# 每次实验完记得改
-scores='/root/autodl-fs/LOGANDRESULT/Task4b/result/baseline/dev_txt_scores/'
-ground_truth='/autodl-fs/data/Task4b/metadata/gt_dev.csv'
-audio_durations= '/autodl-fs/data/Task4b/metadata/development_metadata.csv'
