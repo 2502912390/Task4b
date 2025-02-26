@@ -31,8 +31,9 @@ class my_CRNN(nn.Module):
 
         self.linear1 = nn.Linear(rnn_hid*2, rnn_hid)
 
-
         self.linear2 = nn.Linear(rnn_hid, classes_num)
+
+        self.sigmoid = torch.sigmoid() 
 
     def forward(self, input):
 
@@ -63,6 +64,7 @@ class my_CRNN(nn.Module):
         x = self.linear1(recurrent)
         x = self.linear2(x)
         
+        x = self.sigmoid(x) #要用bce就要sig
         return x
 
 

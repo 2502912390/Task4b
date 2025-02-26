@@ -38,13 +38,86 @@ def preprocess_data(_X, _Y, _X_val, _Y_val, _seq_len):
     return _X, _Y, _X_val, _Y_val
 
 
-class DySRLoss(nn.Module):
+# class DySRLoss(nn.Module):
+#     def __init__(self):
+#         super(DySRLoss, self).__init__()
+#         # 此处 loss 使用 reduction='none' 以便后续计算 per-sample 的 loss
+#         self.bce_loss = nn.BCELoss(reduction='none')
+#         self.mse_loss = nn.MSELoss(reduction='none') #mean可能要改
+#         self.weight = 0.5
+
+#     def forward(self, y_pred, y_true):
+#         # 计算活跃帧与非活跃帧
+#         active_frame = y_pred * y_true
+#         inactive_frame = y_pred * (1 - y_true)
+
+#         bs = y_pred.shape[0]
+#         conf_list = []
+#         for i in range(bs):
+#             sample_active = active_frame[i]
+#             # 选取非0元素
+#             non_zero = sample_active[sample_active != 0]
+
+#             if non_zero.numel() > 0:
+#                 conf_i = non_zero.sum() / non_zero.numel()
+#             else:# 如果存在非0元素，计算它们的平均；否则取整个样本的平均
+#                 conf_i = sample_active.mean()
+#             conf_list.append(conf_i)
+
+#         # 每个样本都有其自己的置信度和缩放因子
+#         conf_tensor = torch.stack(conf_list)
+#         scale = torch.clamp(conf_tensor / 0.5, max=1.0)
+
+#         sample_weights = self.weight * scale
+
+#         active_loss_tensor = self.mse_loss(active_frame, y_true)
+#         inactive_loss_tensor = self.mse_loss(inactive_frame, y_true)
+
+#         # 在 cls 和 time_seq 两个维度上求平均，得到每个样本的平均 loss
+#         active_loss_per_sample = active_loss_tensor.mean(dim=[1, 2])
+#         inactive_loss_per_sample = inactive_loss_tensor.mean(dim=[1, 2])
+
+#         # 每个样本的最终损失
+#         loss_per_sample = active_loss_per_sample + sample_weights * inactive_loss_per_sample
+
+#         # 对整个 batch 取平均得到最终 loss
+#         loss = loss_per_sample.mean()
+#         return loss
+
+
+# class SRLoss(nn.Module):
+#     def __init__(self):
+#         super(SRLoss, self).__init__()
+#         self.loss=torch.nn.BCELoss()
+
+#     def forward(self, y_pred, y_true):
+#         active_frame=y_pred*y_true
+#         inactive_frame=y_pred*(1-y_true)
+
+#         active_loss = self.loss(active_frame,y_true)
+#         inactive_loss = self.loss(inactive_frame,y_true)
+
+#         return active_loss + 0.5*inactive_loss
+
+# 论文中的实现方式
+class PaperSRL(nn.Module):
     def __init__(self):
-        super(DySRLoss, self).__init__()
-        # 此处 loss 使用 reduction='none' 以便后续计算 per-sample 的 loss
-        self.bce_loss = nn.BCELoss(reduction='none')
-        self.mse_loss = nn.MSELoss(reduction='none') #mean可能要改
+        super(PaperSRL, self).__init__()
+        self.eps = 1e-12
+
+    def forward(self, y_pred, y_true):
+        y_pred = torch.clamp(y_pred, self.eps, 1 - self.eps)
+
+        active_loss = -torch.mean((y_true * torch.log(y_pred)))
+        inactive_loss =  -torch.mean((1 - y_true) * torch.log(1 - y_pred))
+
+        return active_loss + 0.5*inactive_loss
+
+class DyPaperSRL(nn.Module):
+    def __init__(self):
+        super(DyPaperSRL, self).__init__()
         self.weight = 0.5
+        self.eps = 1e-12
 
     def forward(self, y_pred, y_true):
         # 计算活跃帧与非活跃帧
@@ -67,11 +140,11 @@ class DySRLoss(nn.Module):
         # 每个样本都有其自己的置信度和缩放因子
         conf_tensor = torch.stack(conf_list)
         scale = torch.clamp(conf_tensor / 0.5, max=1.0)
-
         sample_weights = self.weight * scale
 
-        active_loss_tensor = self.mse_loss(active_frame, y_true)
-        inactive_loss_tensor = self.mse_loss(inactive_frame, y_true)
+        y_pred = torch.clamp(y_pred, self.eps, 1 - self.eps)
+        active_loss_tensor = -(y_true * torch.log(y_pred))
+        inactive_loss_tensor = -(1 - y_true) * torch.log(1 - y_pred)
 
         # 在 cls 和 time_seq 两个维度上求平均，得到每个样本的平均 loss
         active_loss_per_sample = active_loss_tensor.mean(dim=[1, 2])
@@ -84,20 +157,6 @@ class DySRLoss(nn.Module):
         loss = loss_per_sample.mean()
         return loss
 
-
-class SRLoss(nn.Module):
-    def __init__(self):
-        super(SRLoss, self).__init__()
-        self.loss=torch.nn.BCELoss()
-
-    def forward(self, y_pred, y_true):
-        active_frame=y_pred*y_true
-        inactive_frame=y_pred*(1-y_true)
-
-        active_loss = self.loss(active_frame,y_true)
-        inactive_loss = self.loss(inactive_frame,y_true)
-
-        return active_loss + 0.5*inactive_loss
 
 def train():
     # Arguments & parameters
@@ -130,7 +189,7 @@ def train():
     create_folder(config.output_folder)
     create_folder(config.output_folder_soft)
 
-    Loss = DySRLoss()
+    Loss = PaperSRL()
 
     for fold in holdout_fold:
 
