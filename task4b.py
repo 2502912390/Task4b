@@ -84,6 +84,21 @@ class DySRLoss(nn.Module):
         loss = loss_per_sample.mean()
         return loss
 
+
+class SRLoss(nn.Module):
+    def __init__(self):
+        super(SRLoss, self).__init__()
+        self.loss=torch.nn.BCELoss()
+
+    def forward(self, y_pred, y_true):
+        active_frame=y_pred*y_true
+        inactive_frame=y_pred*(1-y_true)
+
+        active_loss = self.loss(active_frame,y_true)
+        inactive_loss = self.loss(inactive_frame,y_true)
+
+        return active_loss + 0.5*inactive_loss
+
 def train():
     # Arguments & parameters
     stop_iteration = 150
@@ -164,7 +179,7 @@ def train():
                 # batch_data:([bs, 200, 64])  batch_target:([bs, 200, 17])  batch_output:([bs, 200, 17])
                 batch_output = modelcrnn(move_data_to_device(batch_data, device))
                 
-                # loss = clip_mse(batch_output, move_data_to_device(batch_target,device))
+                # loss = clip_mse(batch_output, move_data_to_device(batch_target,device)) #此时 两个都是概率值
                 loss = Loss(batch_output, move_data_to_device(batch_target,device))
                     
                 tr_batch_loss.append(loss.item())

@@ -53,15 +53,13 @@ def eval_meta_hard(output_folder, audio_name, framewise_output):
     )
 
 
-
-
 def process_event(class_labels, frame_probabilities, threshold, hop_length_seconds):
     results = []
     for event_id, event_label in enumerate(class_labels):
         # Make sure that the evaluated labels are the ones that correspond to the hard labels
         if event_label in config.labels_hard:
             # Binarization
-            event_activity = frame_probabilities[event_id, :] > threshold
+            event_activity = frame_probabilities[event_id, :] > threshold #测试的时候才进行二值化
 
             # Convert active frames into segments and translate frame indices into time stamps
             event_segments = np.floor(find_contiguous_regions(event_activity) * hop_length_seconds)
