@@ -12,6 +12,46 @@ import pandas as pd
 from data_generator import maestroDataset
 import config
 
+
+class LongTailFocalLoss(nn.Module):
+    def __init__(self, class_durations, gamma=2.0):
+        """
+        :param class_durations: 每个类别的总时长 (单位：分钟)
+        :param gamma: 控制 Focal Loss 的参数，通常设为 2.0
+        """
+        super(LongTailFocalLoss, self).__init__()
+        self.gamma = gamma
+        self.alpha = torch.tensor(1 / (np.log1p(class_durations)), dtype=torch.float32)  # 计算 alpha
+
+    def forward(self, logits, targets):
+        """
+        :param logits: 模型输出 (Batch, 200, 11)，未经 Softmax 处理
+        :param targets: 真实标签 (Batch, 200, 11)，one-hot 形式
+        """
+        probs = torch.sigmoid(logits)  # 获取概率
+        ce_loss = -targets * torch.log(probs + 1e-9)  # 交叉熵部分
+        focal_factor = (1 - probs) ** self.gamma  # Focal Loss 调整因子
+        loss = self.alpha.to(logits.device) * focal_factor * ce_loss  # 加权 Focal Loss
+        return loss.mean()  # 取均值
+
+class LogitAdjustedLoss(nn.Module):
+    def __init__(self, class_durations, tau=0.5):
+        """
+        :param class_durations: 每个类别的总时长
+        :param tau: 调整系数，推荐 0.5 ~ 1.0
+        """
+        super(LogitAdjustedLoss, self).__init__()
+        self.logit_bias = torch.tensor(tau * np.log(class_durations), dtype=torch.float32)
+
+    def forward(self, logits, targets):
+        """
+        :param logits: (Batch, 200, 11) 原始输出
+        :param targets: (Batch, 200, 11) 真实标签，one-hot
+        """
+        adjusted_logits = logits - self.logit_bias.to(logits.device)  # 进行 logit 调整
+        loss = F.binary_cross_entropy_with_logits(adjusted_logits, targets)  # 计算 BCE Loss
+        return loss
+
 # 加载整段的mel，注意：保存文件的时候是训练何验证一起保存的
 def load_merged_data(_feat_folder, _lab_folder,  _fold=None):
     # Load features (mbe)
@@ -68,7 +108,10 @@ def train():
     create_folder(config.output_model)
     create_folder(config.output_folder)
     create_folder(config.output_folder_soft)
-
+    
+    class_durations = np.array([36.80, 87.83, 142.58, 36.10, 4.58, 3.53, 2.75, 17.23, 4.25, 11.30, 7.48])
+    # loss_fn = LongTailFocalLoss(class_durations, gamma=2.0)
+    loss_fn = LogitAdjustedLoss(class_durations, tau=0.5)
 
     for fold in holdout_fold:
 
@@ -117,7 +160,8 @@ def train():
                 # batch_data:([bs, 200, 64])  batch_target:([bs, 200, 17])  batch_output:([bs, 200, 17])
                 batch_output = modelcrnn(move_data_to_device(batch_data, device))
                 
-                loss = clip_mse(batch_output, move_data_to_device(batch_target,device))
+                # loss = clip_mse(batch_output, move_data_to_device(batch_target,device))
+                loss = loss_fn(batch_output, move_data_to_device(batch_target,device))
                     
                 tr_batch_loss.append(loss.item())
 
@@ -141,7 +185,8 @@ def train():
                 for (batch_data, batch_target) in validate_loader:
                     batch_output = modelcrnn(move_data_to_device(batch_data, device))
 
-                    loss = clip_mse(batch_output, move_data_to_device(batch_target,device))
+                    # loss = clip_mse(batch_output, move_data_to_device(batch_target,device))
+                    loss = loss_fn(batch_output, move_data_to_device(batch_target,device))
 
                     segment_based_metrics_batch = metric_perbatch(segment_based_metrics_batch,
                                                                   batch_output.reshape(-1, len(config.labels_soft)).detach().cpu().numpy(),
