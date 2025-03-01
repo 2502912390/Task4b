@@ -331,3 +331,4 @@ if __name__ == '__main__':
 
     # result = get_threshold_independent(config.scores)
     # print(result)
+os.system("/usr/bin/shutdown")
