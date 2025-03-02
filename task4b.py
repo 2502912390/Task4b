@@ -114,6 +114,10 @@ def train():
                 # Zero gradients for every batch
                 optimizer.zero_grad()
 
+                print(batch_target)
+                batch_target = (batch_target > 0.5).float()
+                print(batch_target)
+
                 # batch_data:([bs, 200, 64])  batch_target:([bs, 200, 17])  batch_output:([bs, 200, 17])
                 batch_output = modelcrnn(move_data_to_device(batch_data, device))
                 

@@ -61,7 +61,7 @@ development_feature = '/root/autodl-fs/dataset/MAESTRO_Real/development/features
 development_soft_labels = '/root/autodl-fs/dataset/MAESTRO_Real/development/soft_labels/'
 
 # 结果保存
-task = "0226_version1_SRL_mse" 
+task = "0302_hard_label" 
 result_path = '/root/autodl-fs/LOGANDRESULT/Task4b' 
 output_model = os.path.join(result_path, task, 'model')
 output_folder = os.path.join(result_path, task, 'dev_txt_scores')
