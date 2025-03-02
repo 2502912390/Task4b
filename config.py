@@ -1,5 +1,8 @@
 import os
-device = 'cuda'
+import torch
+
+device = 'cuda' if (torch.cuda.is_available()) else 'cpu'
+# device = 'cpu'
 posterior_thresh = 0.5
 sample_rate = 44100 # 采样率是44100
 hop_size = 8820 

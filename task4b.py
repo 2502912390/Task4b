@@ -10,7 +10,10 @@ import config
 import sed_eval
 import pandas as pd
 from data_generator import maestroDataset
-import config
+import sys
+import requests
+import base64
+
 
 # 加载整段的mel，注意：保存文件的时候是训练何验证一起保存的
 def load_merged_data(_feat_folder, _lab_folder,  _fold=None):
@@ -45,14 +48,14 @@ def train():
     patience = int(0.6*stop_iteration)
     holdout_fold = np.arange(1, 6) #折数
     seq_len = 200 #数据要划分的长度
-    batch_size = 172
+    batch_size = 256
     
     # CRNN model definition   
     cnn_filters = 128       # Number of filters in the CNN
     rnn_hid = 32            # Number of RNN nodes.  Length of rnn_nb =  number of RNN layers
     dropout_rate = 0.2      # Dropout after each layer
 
-    device = 'cuda' if (torch.cuda.is_available()) else 'cpu'
+    device = config.device
 
     # Add variables to save the test loss
     avg_er = list(); avg_f1 = list()
@@ -114,9 +117,7 @@ def train():
                 # Zero gradients for every batch
                 optimizer.zero_grad()
 
-                print(batch_target)
                 batch_target = (batch_target > 0.5).float()
-                print(batch_target)
 
                 # batch_data:([bs, 200, 64])  batch_target:([bs, 200, 17])  batch_output:([bs, 200, 17])
                 batch_output = modelcrnn(move_data_to_device(batch_data, device))
@@ -290,3 +291,16 @@ if __name__ == '__main__':
 
     # result = get_threshold_independent(config.scores)
     # print(result)
+
+    token = "获取到的Token"
+    token_encoded = base64.b64encode(token.encode('utf-8')).decode('ascii')
+
+    headers = {"Authorization": token_encoded}
+    resp = requests.post("https://www.autodl.com/api/v1/wechat/message/send",
+                        json={
+                            "title": "623",
+                            "name": "share_rnn",
+                            "content": "0302_share_rnn512"
+                        }, headers = headers)
+    print(resp.content.decode())
+    # os.system("/usr/bin/shutdown")
