@@ -72,7 +72,6 @@ def train():
     create_folder(config.output_folder)
     create_folder(config.output_folder_soft)
 
-
     for fold in holdout_fold:
 
         # Load features and labels
@@ -144,6 +143,8 @@ def train():
                 
                 running_loss = 0.0
                 for (batch_data, batch_target) in validate_loader:
+                    batch_target = (batch_target > 0.5).float()
+
                     batch_output = modelcrnn(move_data_to_device(batch_data, device))
 
                     loss = clip_mse(batch_output, move_data_to_device(batch_target,device))
@@ -298,9 +299,9 @@ if __name__ == '__main__':
     headers = {"Authorization": token_encoded}
     resp = requests.post("https://www.autodl.com/api/v1/wechat/message/send",
                         json={
-                            "title": "623",
-                            "name": "share_rnn",
-                            "content": "0302_share_rnn512"
+                            "title": "SED",
+                            "name": "hard_label",
+                            "content": "0302_hard_label_addval"
                         }, headers = headers)
     print(resp.content.decode())
     # os.system("/usr/bin/shutdown")
