@@ -290,17 +290,11 @@ def train():
 if __name__ == '__main__':
     train()
 
-    # result = get_threshold_independent(config.scores)
-    # print(result)
-
-    token = "获取到的Token"
-    token_encoded = base64.b64encode(token.encode('utf-8')).decode('ascii')
-
-    headers = {"Authorization": token_encoded}
+    headers = {"Authorization": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjE5MTQ0MywidXVpZCI6ImY1YTZiZTZmLTg4ZTUtNDA3Yi1iZTRkLTdjNGQ3ODI0MzI1NiIsImlzX2FkbWluIjpmYWxzZSwiYmFja3N0YWdlX3JvbGUiOiIiLCJpc19zdXBlcl9hZG1pbiI6ZmFsc2UsInN1Yl9uYW1lIjoiIiwidGVuYW50IjoiYXV0b2RsIiwidXBrIjoiIn0._1aEi7POpn9nvvEfPJXL9qpvumIQXdij-qUzqncPIDjAaW3H9F3QgH_ilGOUdV6Z_oqwGyH5KsEbN0GbQ75Nhw"}
     resp = requests.post("https://www.autodl.com/api/v1/wechat/message/send",
                         json={
                             "title": "SED",
-                            "name": "hard_label",
+                            "name": "hard_label", #信息
                             "content": "0302_hard_label_addval"
                         }, headers = headers)
     print(resp.content.decode())
